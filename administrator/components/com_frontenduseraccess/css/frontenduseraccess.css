@@ -1,0 +1,294 @@
+html{
+	overflow-y: scroll;	
+}
+
+div.align_left{
+	text-align: left;
+}
+
+td{
+	vertical-align: top;
+}
+
+table#toolbar{
+	height: 52px;
+}
+
+span.editlinktip{
+	border-bottom: 1px dashed #ccc;
+}
+
+div#config_link{
+	text-align: left;
+	margin-bottom: 10px;
+}
+
+div#ua_footer{
+	text-align: center;
+	margin-top: 100px;
+}
+
+.sidestep{
+	float: left; 
+	width: 210px;	
+}
+
+.sidestep2{
+	float: left; 
+	width: 400px;	
+}
+
+.checkbox{
+	margin-bottom: -1px;
+}
+
+#users, #pages, #itemtypes, #workflow, #components, #toolbars{
+	display: none;	
+}
+
+/* menu tabs */
+
+ul#fua_menu{
+	margin: 0 0 30px 0;
+	padding: 0 0 0 20px;
+	overflow: hidden;
+	background: url(../images/fua_tabs_bg.gif) repeat-x bottom;	
+	font-size: 11px;	
+}
+
+ul#fua_menu li{	
+	margin-right: 3px;
+	float: left;
+	list-style-type: none;
+}
+
+ul#fua_menu a{
+	margin: 0;
+	padding: 0;
+	text-decoration: none;	
+	background: url(../images/fua_tab_off.gif) no-repeat top right;
+	display: block;
+	
+}
+
+ul#fua_menu a span{	
+	background: url(../images/fua_tab_off_left.gif) no-repeat top left;	
+	display: block;
+	padding: 3px 10px;
+}
+
+ul#fua_menu .on{
+	background: url(../images/fua_tab_on.gif) no-repeat top right;
+}
+
+ul#fua_menu a.on:link, ul#fua_menu a.on:visited, ul#fua_menu a.on:active, ul#fua_menu a.on:hover{
+	color: black;
+	text-decoration: none;
+}
+
+ul#fua_menu a.on span{	
+	background: url(../images/fua_tab_on_left.gif) no-repeat top left;	
+}
+
+#general_settings, #users, #url_access, #item_access, #module_access, #category_access, workflow, #component_access, #menu_access, #part_access, #paid_content{
+	display: none;
+}
+
+form ul, form p{
+	text-align: left;
+}
+
+.align_right{
+	text-align: right;
+}
+
+.extra_button_field{
+	width: 650px;
+	height: 200px;
+}
+
+.row{
+	margin-bottom: 10px;
+}
+
+.componentfield{
+	width: 200px;
+}
+
+.url_field{
+	width: 600px;
+}
+
+.warning_img{
+	margin-left: 50px;
+	margin-right: 5px;
+}
+
+.fua_wrapper{
+	overflow: hidden;
+	margin-top: 5px;
+}
+
+.css_input{
+	width: 200px;
+}
+
+table.adminlist tbody tr.row1:hover td, table.adminlist tbody tr.row0:hover td{ 
+	background-color: #D7FCBC; 
+}
+
+table.adminlist tbody tr td, table.adminlist tbody tr.row1 td{
+	border: 0;
+	padding-top: 10px;
+}
+
+.sidestep{
+	float: left; 
+	width: 180px;
+	white-space: nowrap;
+}
+
+.sidestep2{
+	float: left; 
+	width: 360px;
+	white-space: nowrap;
+}
+
+th{	
+	text-align: left;
+	background: #F0F0F0;
+	border-bottom: 1px solid #999999;
+}
+
+td{
+	vertical-align: top;
+}
+
+.long_text_field{
+	width: 400px;
+}
+
+#td_usergroup_selector{	
+	white-space: nowrap;	
+	text-align: right;		
+}
+
+#fua_subheader{
+	width: 100%;
+}
+
+#fua_subheader td, #fua_subheader_users td{
+	vertical-align: bottom;
+}
+
+#fua_subheader button{
+	/*font-size:0.909em;*/
+}
+
+.column_ids{
+	width: 15px;
+	white-space: nowrap;
+	text-align: right;
+}
+
+.hasTip{
+	border-bottom: 1px dashed #cccccc;	
+}
+
+form label{
+	width: auto;
+	display: inline;
+	float: none;
+	font-size: 100%;
+	clear: auto;
+}
+
+#fua_subheader p, #fua_subheader_users p{
+	margin-left: 0;
+}
+
+div#element-box div.m form table.adminlist tr td a{
+	font-size: 100%;
+}
+
+#fua_header_messages div{
+	padding-left: 4px;
+}
+
+#version_checker_spinner{
+	display: none;
+}
+
+.fua_superscript{
+	color: red;
+	padding-left: 5px;		
+}
+
+table.adminlist tbody tr td.has_superscript, table.adminlist tbody tr.row1 td.has_superscript{
+	padding-top: 7px;
+}
+
+.fua_red{
+	color: #cc0000;
+}
+
+#ua_footer table{
+	width: 600px; 
+	margin: 0 auto; 	
+}
+
+#ua_footer table td{
+	text-align: left;	
+	width: 300px;
+	white-space: nowrap;
+}
+
+#ua_footer table td.text_right{
+	text-align: right;	
+}
+
+#ua_footer table td.five_pix{
+	width: 3px;
+	text-align: center;
+}
+
+.icon-48-fua_icon{
+	background-image: url('../images/icon.png');
+}
+
+div.pagetitle{
+	height: 52px;
+}
+
+.fua_textarea_code{
+	width: 800px;
+	height: 160px;
+}
+
+.fua_green{
+	/*color: #59C807;*/
+	color: green;/*same color as Joomla green text. see system info > dirs*/
+}
+
+/*
+.fua_dot_green{
+	background: url('../images/dot_green.png') 0 3px no-repeat;	
+}
+
+.fua_dot_red{
+	background: url('../images/dot_red.png') 0 3px no-repeat;	
+}
+*/
+
+/*
+.fua_dot{
+	font-size: 14px;
+	line-height: 10px;
+}
+
+
+
+.fua_black{
+	color: #000;
+}
+*/

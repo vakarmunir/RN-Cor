@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="1.6" type="plugin" group="user" method="upgrade">
+	<name>User - Frontend-User-Access</name>
+	<author>Carsten Engel</author>
+	<creationDate>febuari 2011</creationDate>
+	<copyright>Copyright 2011 (C) Carsten Engel - Engelweb. All rights reserved.</copyright>	
+	<authorEmail>-</authorEmail>
+	<authorUrl>www.pages-and-items.com</authorUrl>
+	<version>4.0.0</version>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+	<description>Sets the default Frontend-User-Access usergroup for new users, and redirects users on login from the frontend, as set in the Frontend-User-Access configuration.</description>
+	<files>
+		<filename plugin="frontenduseraccess">frontenduseraccess.php</filename>
+	</files>	
+</extension>

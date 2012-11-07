@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fields>
+
+		<field
+			name="id"
+			type="hidden"
+			default="0"
+			required="true"
+			readonly="true"/>							
+															
+		<field
+			id="first_name"
+			name="first_name"
+			type="text"
+			required="true"
+			label="First_name"
+			description="first_name_Desc"
+			class="inputbox"
+			size="40"/>						
+								
+																		
+		<field
+			id="created_by"
+			name="created_by"
+			required="false"
+			type="print"
+			label="Created_by"
+			description="created_by_Desc"
+			class="inputbox"
+			size="40"/>						
+														
+		<field
+			id="last_name"
+			name="last_name"
+			type="text"
+			required="false"
+			label="Last_name"
+			description="last_name_Desc"
+			class="inputbox"
+			size="40"/>						
+								
+														
+		<field
+			id="s_n"
+			name="s_n"
+			type="text"
+			required="false"
+			label="S_n"
+			description="s_n_Desc"
+			class="inputbox"
+			size="40"/>						
+								
+						
+		<field
+			id="dob"
+			name="dob"
+			type="calendar"
+			required="false"
+			label="Dob"
+			description="dob_Desc"
+			class="inputbox"
+			size="16"
+			format="%Y-%m-%d %H-%M-%S"/>			
+							
+							
+		<field
+			id="start_date"
+			name="start_date"
+			type="calendar"
+			required="false"
+			label="Start_date"
+			description="start_date_Desc"
+			class="inputbox"
+			size="16"
+			format="%Y-%m-%d %H-%M-%S"/>			
+							
+															
+		<field
+			id="dl_no"
+			name="dl_no"
+			type="text"
+			required="false"
+			label="Dl_no"
+			description="dl_no_Desc"
+			class="inputbox"
+			size="40"/>						
+								
+														
+		<field
+			id="class"
+			name="class"
+			type="text"
+			required="false"
+			label="Class"
+			description="class_Desc"
+			class="inputbox"
+			size="40"/>						
+								
+														
+		<field
+			id="status"
+			name="status"
+			type="text"
+			required="false"
+			label="Status"
+			description="status_Desc"
+			class="inputbox"
+			size="40"/>						
+								
+														
+		<field
+			id="email"
+			name="email"
+			type="text"
+			required="false"
+			label="Email"
+			description="email_Desc"
+			class="inputbox"
+			size="40"/>						
+								
+														
+		<field
+			id="cell"
+			name="cell"
+			type="text"
+			required="false"
+			label="Cell"
+			description="cell_Desc"
+			class="inputbox"
+			size="40"/>						
+								
+														
+		<field
+			id="home"
+			name="home"
+			type="text"
+			required="false"
+			label="Home"
+			description="home_Desc"
+			class="inputbox"
+			size="40"/>						
+								
+														
+		<field
+			id="shirt_size"
+			name="shirt_size"
+			type="text"
+			required="false"
+			label="Shirt_size"
+			description="shirt_size_Desc"
+			class="inputbox"
+			size="40"/>						
+								
+														
+		<field
+			id="pant_leg"
+			name="pant_leg"
+			type="text"
+			required="false"
+			label="Pant_leg"
+			description="pant_leg_Desc"
+			class="inputbox"
+			size="40"/>						
+								
+														
+		<field
+			id="waist"
+			name="waist"
+			type="text"
+			required="false"
+			label="Waist"
+			description="waist_Desc"
+			class="inputbox"
+			size="40"/>						
+								
+														
+		<field
+			id="receive_update_by"
+			name="receive_update_by"
+			type="text"
+			required="false"
+			label="Receive_update_by"
+			description="receive_update_by_Desc"
+			class="inputbox"
+			size="40"/>						
+								
+														
+		<field
+			id="desired_shift"
+			name="desired_shift"
+			type="text"
+			required="false"
+			label="Desired_shift"
+			description="desired_shift_Desc"
+			class="inputbox"
+			size="40"/>						
+								
+						
+		<field
+			id="created_date"
+			name="created_date"
+			type="calendar"
+			required="false"
+			label="Created_date"
+			description="created_date_Desc"
+			class="inputbox"
+			size="16"
+			format="%Y-%m-%d %H-%M-%S"/>			
+							
+							
+		<field
+			id="updated_by"
+			name="updated_by"
+			type="calendar"
+			required="false"
+			label="Updated_by"
+			description="updated_by_Desc"
+			class="inputbox"
+			size="16"
+			format="%Y-%m-%d %H-%M-%S"/>			
+							
+							
+		<field
+			id="updated_date"
+			name="updated_date"
+			type="calendar"
+			required="false"
+			label="Updated_date"
+			description="updated_date_Desc"
+			class="inputbox"
+			size="16"
+			format="%Y-%m-%d %H-%M-%S"/>			
+							
+															
+		<field
+			id="active_status"
+			name="active_status"
+			type="text"
+			required="false"
+			label="Active_status"
+			description="active_status_Desc"
+			class="inputbox"
+			size="40"/>						
+								
+														
+		<field
+			id="verified_status"
+			name="verified_status"
+			type="text"
+			required="false"
+			label="Verified_status"
+			description="verified_status_Desc"
+			class="inputbox"
+			size="40"/>						
+								
+								
+	</fields>	
+		
+</form>	

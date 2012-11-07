@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fields>
+
+		<field
+			name="id"
+			type="hidden"
+			default="0"
+			required="true"
+			readonly="true"/>							
+															
+		<field
+			id="name"
+			name="name"
+			type="text"
+			required="true"
+			label="Name"
+			description="name_Desc"
+			class="inputbox"
+			size="40"/>						
+								
+														
+		<field
+			id="type"
+			name="type"
+			type="text"
+			required="false"
+			label="Type"
+			description="type_Desc"
+			class="inputbox"
+			size="40"/>						
+								
+								
+	</fields>	
+		
+</form>	

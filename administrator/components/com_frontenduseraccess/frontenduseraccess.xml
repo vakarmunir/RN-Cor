@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="1.6" method="upgrade">
+    <name>COM_FRONTENDUSERACCESS</name>
+    <creationDate>June 2012</creationDate>
+    <author>Carsten Engel</author>
+    <copyright>Copyright 2008-2012 (C) Carsten Engel - Engelweb. All rights reserved.</copyright>
+    <authorEmail></authorEmail>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+    <authorUrl>www.pages-and-items.com</authorUrl>
+    <version>4.1.6</version>
+    <description>COM_FRONTENDUSERACCESS_XML_DESCRIPTION</description>		
+	<files folder="site">		
+		
+		<folder>models</folder>	
+		<folder>views</folder>	       
+		
+		<filename>checkaccess.php</filename>
+		<filename>checkaccess2.php</filename>
+		<filename>checkaccess3.php</filename>
+		<filename>controller.php</filename>
+		<filename>frontenduseraccess.php</filename>
+		<filename>index.html</filename>	
+		<filename>menuaccess.php</filename>		
+		<filename>router.php</filename>					
+			
+	</files>	    
+    <administration>  
+		<menu img="components/com_frontenduseraccess/images/icon.gif">COM_FRONTENDUSERACCESS</menu>
+		<submenu>			
+			<menu link="option=com_frontenduseraccess&amp;view=config" view="configuration" img="class:config" 
+				alt="Configuration">COM_FRONTENDUSERACCESS_CONFIG</menu>			
+			<menu link="option=com_frontenduseraccess&amp;view=usergroups" view="usergroups" img="class:groups" 
+				alt="Usergroups">COM_FRONTENDUSERACCESS_USERGROUPS</menu>			
+			<menu link="option=com_frontenduseraccess&amp;view=users" view="users" img="class:user" 
+				alt="Users">COM_FRONTENDUSERACCESS_USERS</menu>
+			<menu link="option=com_frontenduseraccess&amp;view=items" view="items" img="class:article" 
+				alt="Item access">COM_FRONTENDUSERACCESS_ITEM_ACCESS</menu>
+			<menu link="option=com_frontenduseraccess&amp;view=categories" view="categories" img="class:category" 
+				alt="Category access">COM_FRONTENDUSERACCESS_CATEGORY_ACCESS</menu>
+			<menu link="option=com_frontenduseraccess&amp;view=modules" view="modules" img="class:module" 
+				alt="Module access">COM_FRONTENDUSERACCESS_MODULE_ACCESS</menu>
+			<menu link="option=com_frontenduseraccess&amp;view=components" view="components" img="class:menumgr" 
+				alt="Component access">COM_FRONTENDUSERACCESS_COMPONENT_ACCESS</menu>
+			<menu link="option=com_frontenduseraccess&amp;view=menuaccess" view="menuaccess" img="class:menu" 
+				alt="Menu access">COM_FRONTENDUSERACCESS_MENU_ACCESS</menu>
+			<menu link="option=com_frontenduseraccess&amp;view=parts" view="parts" img="class:help-jrd" 
+				alt="Part access">COM_FRONTENDUSERACCESS_PART_ACCESS</menu>
+			<menu link="option=com_frontenduseraccess&amp;view=support" view="support" img="class:info" 
+				alt="Support">COM_FRONTENDUSERACCESS_SUPPORT</menu>						
+		</submenu>     
+		<languages folder="admin">
+			<language tag="af-ZA">language/af-ZA.com_frontenduseraccess.ini</language>
+			<language tag="af-ZA">language/af-ZA.com_frontenduseraccess.sys.ini</language>
+			<language tag="ar-EG">language/ar-EG.com_frontenduseraccess.ini</language>
+			<language tag="ar-EG">language/ar-EG.com_frontenduseraccess.sys.ini</language>
+			<language tag="be-BE">language/be-BE.com_frontenduseraccess.ini</language>
+			<language tag="be-BE">language/be-BE.com_frontenduseraccess.sys.ini</language>
+			<language tag="bg-BG">language/bg-BG.com_frontenduseraccess.ini</language>
+			<language tag="bg-BG">language/bg-BG.com_frontenduseraccess.sys.ini</language>
+			<language tag="ca-ES">language/ca-ES.com_frontenduseraccess.ini</language>
+			<language tag="ca-ES">language/ca-ES.com_frontenduseraccess.sys.ini</language>
+			<language tag="cs-CZ">language/cs-CZ.com_frontenduseraccess.ini</language>
+			<language tag="cs-CZ">language/cs-CZ.com_frontenduseraccess.sys.ini</language>
+			<language tag="cy-GB">language/cy-GB.com_frontenduseraccess.ini</language>
+			<language tag="cy-GB">language/cy-GB.com_frontenduseraccess.sys.ini</language>
+			<language tag="da-DK">language/da-DK.com_frontenduseraccess.ini</language>
+			<language tag="da-DK">language/da-DK.com_frontenduseraccess.sys.ini</language>
+			<language tag="de-DE">language/de-DE.com_frontenduseraccess.ini</language>
+			<language tag="de-DE">language/de-DE.com_frontenduseraccess.sys.ini</language>
+			<language tag="el-GR">language/el-GR.com_frontenduseraccess.ini</language>
+			<language tag="el-GR">language/el-GR.com_frontenduseraccess.sys.ini</language>
+			<language tag="en-GB">language/en-GB.com_frontenduseraccess.ini</language>
+			<language tag="en-GB">language/en-GB.com_frontenduseraccess.sys.ini</language>
+			<language tag="es-ES">language/es-ES.com_frontenduseraccess.ini</language>
+			<language tag="es-ES">language/es-ES.com_frontenduseraccess.sys.ini</language>
+			<language tag="et-EE">language/et-EE.com_frontenduseraccess.ini</language>
+			<language tag="et-EE">language/et-EE.com_frontenduseraccess.sys.ini</language>
+			<language tag="fa-IR">language/fa-IR.com_frontenduseraccess.ini</language>
+			<language tag="fa-IR">language/fa-IR.com_frontenduseraccess.sys.ini</language>
+			<language tag="fi-FI">language/fi-FI.com_frontenduseraccess.ini</language>
+			<language tag="fi-FI">language/fi-FI.com_frontenduseraccess.sys.ini</language>
+			<language tag="fr-FR">language/fr-FR.com_frontenduseraccess.ini</language>
+			<language tag="fr-FR">language/fr-FR.com_frontenduseraccess.sys.ini</language>
+			<language tag="ga-IE">language/ga-IE.com_frontenduseraccess.ini</language>
+			<language tag="ga-IE">language/ga-IE.com_frontenduseraccess.sys.ini</language>
+			<language tag="gl-ES">language/gl-ES.com_frontenduseraccess.ini</language>
+			<language tag="gl-ES">language/gl-ES.com_frontenduseraccess.sys.ini</language>
+			<language tag="he-IL">language/he-IL.com_frontenduseraccess.ini</language>
+			<language tag="he-IL">language/he-IL.com_frontenduseraccess.sys.ini</language>
+			<language tag="hi-IN">language/hi-IN.com_frontenduseraccess.ini</language>
+			<language tag="hi-IN">language/hi-IN.com_frontenduseraccess.sys.ini</language>
+			<language tag="hr-HR">language/hr-HR.com_frontenduseraccess.ini</language>
+			<language tag="hr-HR">language/hr-HR.com_frontenduseraccess.sys.ini</language>
+			<language tag="ht-NG">language/ht-NG.com_frontenduseraccess.ini</language>
+			<language tag="ht-NG">language/ht-NG.com_frontenduseraccess.sys.ini</language>
+			<language tag="hu-HU">language/hu-HU.com_frontenduseraccess.ini</language>
+			<language tag="hu-HU">language/hu-HU.com_frontenduseraccess.sys.ini</language>
+			<language tag="id-ID">language/id-ID.com_frontenduseraccess.ini</language>
+			<language tag="id-ID">language/id-ID.com_frontenduseraccess.sys.ini</language>
+			<language tag="is-IS">language/is-IS.com_frontenduseraccess.ini</language>
+			<language tag="is-IS">language/is-IS.com_frontenduseraccess.sys.ini</language>
+			<language tag="it-IT">language/it-IT.com_frontenduseraccess.ini</language>
+			<language tag="it-IT">language/it-IT.com_frontenduseraccess.sys.ini</language>
+			<language tag="ja-JP">language/ja-JP.com_frontenduseraccess.ini</language>
+			<language tag="ja-JP">language/ja-JP.com_frontenduseraccess.sys.ini</language>
+			<language tag="ko-KR">language/ko-KR.com_frontenduseraccess.ini</language>
+			<language tag="ko-KR">language/ko-KR.com_frontenduseraccess.sys.ini</language>
+			<language tag="lt-LT">language/lt-LT.com_frontenduseraccess.ini</language>
+			<language tag="lt-LT">language/lt-LT.com_frontenduseraccess.sys.ini</language>
+			<language tag="lv-LV">language/lv-LV.com_frontenduseraccess.ini</language>
+			<language tag="lv-LV">language/lv-LV.com_frontenduseraccess.sys.ini</language>
+			<language tag="mk-MK">language/mk-MK.com_frontenduseraccess.ini</language>
+			<language tag="mk-MK">language/mk-MK.com_frontenduseraccess.sys.ini</language>
+			<language tag="ms-MY">language/ms-MY.com_frontenduseraccess.ini</language>
+			<language tag="ms-MY">language/ms-MY.com_frontenduseraccess.sys.ini</language>
+			<language tag="mt-MT">language/mt-MT.com_frontenduseraccess.ini</language>
+			<language tag="mt-MT">language/mt-MT.com_frontenduseraccess.sys.ini</language>
+			<language tag="nl-NL">language/nl-NL.com_frontenduseraccess.ini</language>
+			<language tag="nl-NL">language/nl-NL.com_frontenduseraccess.sys.ini</language>
+			<language tag="no-NO">language/no-NO.com_frontenduseraccess.ini</language>
+			<language tag="no-NO">language/no-NO.com_frontenduseraccess.sys.ini</language>
+			<language tag="pl-PL">language/pl-PL.com_frontenduseraccess.ini</language>
+			<language tag="pl-PL">language/pl-PL.com_frontenduseraccess.sys.ini</language>
+			<language tag="pt-BR">language/pt-BR.com_frontenduseraccess.ini</language>
+			<language tag="pt-BR">language/pt-BR.com_frontenduseraccess.sys.ini</language>
+			<language tag="pt-PT">language/pt-PT.com_frontenduseraccess.ini</language>
+			<language tag="pt-PT">language/pt-PT.com_frontenduseraccess.sys.ini</language>			
+			<language tag="ro-RO">language/ro-RO.com_frontenduseraccess.ini</language>
+			<language tag="ro-RO">language/ro-RO.com_frontenduseraccess.sys.ini</language>
+			<language tag="ru-RU">language/ru-RU.com_frontenduseraccess.ini</language>
+			<language tag="ru-RU">language/ru-RU.com_frontenduseraccess.sys.ini</language>
+			<language tag="sk-SK">language/sk-SK.com_frontenduseraccess.ini</language>
+			<language tag="sk-SK">language/sk-SK.com_frontenduseraccess.sys.ini</language>
+			<language tag="sl-SI">language/sl-SI.com_frontenduseraccess.ini</language>
+			<language tag="sl-SI">language/sl-SI.com_frontenduseraccess.sys.ini</language>
+			<language tag="sq-AL">language/sq-AL.com_frontenduseraccess.ini</language>
+			<language tag="sq-AL">language/sq-AL.com_frontenduseraccess.sys.ini</language>
+			<language tag="sr-RS">language/sr-RS.com_frontenduseraccess.ini</language>
+			<language tag="sr-RS">language/sr-RS.com_frontenduseraccess.sys.ini</language>
+			<language tag="sv-SE">language/sv-SE.com_frontenduseraccess.ini</language>
+			<language tag="sv-SE">language/sv-SE.com_frontenduseraccess.sys.ini</language>
+			<language tag="sw-TZ">language/sw-TZ.com_frontenduseraccess.ini</language>
+			<language tag="sw-TZ">language/sw-TZ.com_frontenduseraccess.sys.ini</language>
+			<language tag="th-TH">language/th-TH.com_frontenduseraccess.ini</language>
+			<language tag="th-TH">language/th-TH.com_frontenduseraccess.sys.ini</language>
+			<language tag="tl-PH">language/tl-PH.com_frontenduseraccess.ini</language>
+			<language tag="tl-PH">language/tl-PH.com_frontenduseraccess.sys.ini</language>
+			<language tag="tr-TR">language/tr-TR.com_frontenduseraccess.ini</language>
+			<language tag="tr-TR">language/tr-TR.com_frontenduseraccess.sys.ini</language>
+			<language tag="uk-UA">language/uk-UA.com_frontenduseraccess.ini</language>
+			<language tag="uk-UA">language/uk-UA.com_frontenduseraccess.sys.ini</language>
+			<language tag="vi-VN">language/vi-VN.com_frontenduseraccess.ini</language>
+			<language tag="vi-VN">language/vi-VN.com_frontenduseraccess.sys.ini</language>
+			<language tag="yi-IL">language/yi-IL.com_frontenduseraccess.ini</language>
+			<language tag="yi-IL">language/yi-IL.com_frontenduseraccess.sys.ini</language>			
+			<language tag="zh-CN">language/zh-CN.com_frontenduseraccess.ini</language>
+			<language tag="zh-CN">language/zh-CN.com_frontenduseraccess.sys.ini</language>
+			<language tag="zh-TW">language/zh-TW.com_frontenduseraccess.ini</language>
+			<language tag="zh-TW">language/zh-TW.com_frontenduseraccess.sys.ini</language>		
+		</languages> 		
+		<files folder="admin">	
+				
+			<folder>css</folder>
+			<folder>helpers</folder>
+			<folder>images</folder>
+			<folder>javascript</folder>	
+			<folder>language</folder>				
+			<folder>models</folder>			
+			<folder>plugin_system</folder>
+			<folder>plugin_user</folder>
+			<folder>views</folder>
+			
+			<filename>config.xml</filename>
+			<filename>controller.php</filename>
+			<filename>frontenduseraccess.php</filename>
+			<filename>index.html</filename>			
+									
+		</files>
+		<files>
+			<filename>install.script.php</filename>		
+		</files>		
+	</administration>
+	<scriptfile>install.script.php</scriptfile>	
+	<installfile>install.frontenduseraccess.php</installfile>
+	<uninstallfile>uninstall.frontenduseraccess.php</uninstallfile>	
+</extension>

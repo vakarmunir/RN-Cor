@@ -1,0 +1,70 @@
+<!DOCTYPE install PUBLIC "-//Joomla! 1.5//DTD component 1.0//EN" "http://joomla.org/xml/dtd/1.5/component-install.dtd">
+<install type="component" method="upgrade" version="1.5.0">
+	<name>Rednet</name>
+	<creationDate>2012-08-24</creationDate>
+	<author></author>
+	<authorEmail></authorEmail>
+	<authorUrl></authorUrl>
+	<copyright>Copyright (C) 2012  Open Source Matters. All rights reserved.</copyright>	
+	<license></license>
+	<version>1.0</version>
+	<description>The Red-Net component. Developed by Turnkey Solutions.</description>
+	<installfile></installfile>
+	<uninstallfile></uninstallfile>
+	<install>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/install.mysql.sql</file>
+		</sql>
+	</install>
+	<uninstall>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/uninstall.mysql.sql</file>
+		</sql>
+	</uninstall>
+	<files folder="site">
+			<filename>rednet.php</filename>
+			<filename>controller.php</filename>
+			<filename>index.html</filename>			
+			<filename>router.php</filename>
+			<folder>controllers</folder>
+			<folder>helpers</folder>
+			<folder>models</folder>
+			<folder>views</folder>
+			<folder>assets</folder>			
+	</files>	
+	<languages folder="site">
+		<language tag="en-GB">language/en-GB.com_rednet.ini</language>
+    	<language tag="de-DE">language/de-DE.com_rednet.ini</language>            
+	</languages>
+	<administration>
+		<menu link="index.php?option=com_rednet">Rednet</menu>
+			<submenu>
+		  <menu link="option=com_rednet&amp;view=role">Role</menu>
+		  <menu link="option=com_rednet&amp;view=workers">Workers</menu>
+		  <menu  link="option=com_rednet&amp;view=testvc">Testvc</menu>
+
+			</submenu>
+		<files folder="admin">
+			<filename>config.xml</filename>
+			<filename>admin.rednet.php</filename>
+			<filename>controller.php</filename>
+			<filename>index.html</filename>
+			<filename>access.xml</filename>			
+			<folder>assets</folder>
+			<folder>elements</folder>		
+			<folder>joomla</folder>						
+			<folder>controllers</folder>
+			<folder>helpers</folder>
+			<folder>models</folder>
+			<folder>sql</folder>			
+			<folder>tables</folder>
+			<folder>views</folder>									
+		</files>	
+        <languages folder="admin">
+        	<language tag="en-GB">language/en-GB.com_rednet.ini</language>
+            <language tag="de-DE">language/de-DE.com_rednet.ini</language>
+        	<language tag="en-GB">language/en-GB.com_rednet.sys.ini</language>
+            <language tag="de-DE">language/de-DE.com_rednet.sys.ini</language>                           
+		</languages>		
+	</administration>
+</install>
