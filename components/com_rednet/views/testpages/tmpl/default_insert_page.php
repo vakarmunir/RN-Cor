@@ -4,4 +4,6 @@ defined('_JEXEC') or die('Restricted access');
 
 ?>
 
-<h1>Home page</h1>
+<h1>Insert Page</h1>
+
+form.........

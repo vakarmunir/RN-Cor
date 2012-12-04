@@ -32,72 +32,32 @@ class RednetControllerTestpages extends RednetController
 	}
 	
 
-        public function display_form()                
-           {
-            $name=$_POST['myname'];
-            $status=$_POST['mystatus'];            
+        public function view_all_pages()
+        {
+            $layout="default_all_pages";
             
-            $testpages_model = $this->getModel('testpages');
-            $testpages_model->_name = $name;
-            $testpages_model->_status = $status;
-            $testpages_model->insert_testpage();
-            $all_test_pages = $testpages_model->get_all_testpage();
-                        
+            $id = $_GET['id'];
             
             
-            $layout = "default";
-            JRequest::setVar('all_test_pages',$all_test_pages);
+            $model = $this->getModel('testpages');
+            $all_dbdata = $model->getAllPages();
+            
+            //var_dump($all_pages);
+            
+            JRequest::setVar("allrecords",$all_dbdata);
+            JRequest::setVar('id',$id);
             JRequest::setVar('layout',$layout);
             parent::display();
-            
-           }
-        
-
-           public function edit_form()
-           {
-               $id = $_GET['id'];
-               
-               if(isset($id) && $id!=NULL)
-               {
-                   $model = $this->getModel('testpages');
-                   $a_test_page = $model->get_a_testpage_by_id($id);
-                   $layout = "default_edit_form_dispaly";
-                    JRequest::setVar('a_test_page',$a_test_page);
-                    JRequest::setVar('layout',$layout);
-                    parent::display();
-            
-               }
-           }
-        
-        
-        public function order_form()
-       {
-           
-           $my_data_var = "This is data for heading.";           
-           $layout = "default_order_form";          
-           JRequest::setVar('my_data',$my_data_var);
-           JRequest::setVar('layout',$layout);
-           parent::display();
-       }
-	
-       public  function worker_form()
-       {
-           $layout="default_worker_form";           
-           JRequest::setVar('layout',$layout);
-           parent::display();
-       }
+        }
        
-       public function etc_form()
-               
-             {
-          $layout="default_etc_form";
-         JRequest::setVar("layout",$layout);        
-         $waqar="i am a data";
-         JRequest::setVar("waqar",$waqar);
-        parent::display();
-        
-             }
-       
+        public function insert_a_page()
+        {
+            $layout="default_insert_page";
+            
+            
+            JRequest::setVar('layout',$layout);
+            parent::display();
+        }
        
 }// class
 ?>

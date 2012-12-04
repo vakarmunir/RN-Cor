@@ -44,17 +44,20 @@ class RednetViewTestpages  extends JView
                 
                 //=============================== 
                 
+                $all_dbdata = JRequest::getVar("allrecords");
+                if(isset($all_dbdata)){
+                    $this->assignRef("model_data", $all_dbdata);
+                }
+                $id = JRequest::getVar('id');
                 
-                
-                $heading_data = JRequest::getVar('my_data');
-                
-                if(isset($heading_data))
+                if(isset($id))
                 {
-                    $this->assignRef('h1', $heading_data);                    
-                }                
+                    echo 'in view ==>'.$id;
+                    $this->assignRef('my_id', $id);
+                }
                 
-                $layout=  JRequest::getVar('layout');
-                //echo 'you are making layout='.$layout;
+                
+                $layout = JRequest::getVar('layout');
                 
                 if(isset($layout))
                 {
@@ -62,26 +65,7 @@ class RednetViewTestpages  extends JView
                 }
                 
                 
-                $waqar=  JRequest::getVar('waqar');
-               
-                if(isset($waqar))
-                {
-                    $this->assignRef('waqar',$waqar);
-                } 
                 
-                $all_test_pages=  JRequest::getVar('all_test_pages');
-               
-                if(isset($all_test_pages))
-                {
-                    $this->assignRef('all_test_pages',$all_test_pages);
-                } 
-                
-                $a_test_page=  JRequest::getVar('a_test_page');
-               
-                if(isset($a_test_page))
-                {
-                    $this->assignRef('a_test_page',$a_test_page);
-                } 
                 
                 //===============================
 		parent::display($tpl);

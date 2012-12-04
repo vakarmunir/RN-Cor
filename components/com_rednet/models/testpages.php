@@ -130,6 +130,19 @@ class RednetModelTestpages  extends JModelItem {
 
 		return $this->_item;
 	}
+        
+        
+        public function getAllPages()
+        {
+            $db = JFactory::getDbo();
+            
+            $query = "SELECT * FROM #__testpages";
+            
+            $db->setQuery($query);
+            $db->query() or die ('DB Error : '.mysql_error());
+            
+            return $db->loadObjectList();
+        }
 		
 }
 ?>
