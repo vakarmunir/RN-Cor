@@ -128,6 +128,7 @@ $app = JFactory::getApplication();
 		<script type="text/javascript" src="<?php echo $this->baseurl ?>/templates/<?php echo $this->template ?>/js/fullcalendar.min.js"></script>
 		<script type="text/javascript" src="<?php echo $this->baseurl ?>/templates/<?php echo $this->template ?>/js/jquery.easyui.min.js"></script>
 		<script type="text/javascript" src="<?php echo $this->baseurl ?>/templates/<?php echo $this->template ?>/js/date.js"></script>
+		<script type="text/javascript" src="<?php echo $this->baseurl ?>/templates/<?php echo $this->template ?>/js/jquery.qtip-1.0.0-rc3.min.js"></script>
 
                 
                 <script type="text/javascript" charset="utf-8">
@@ -162,6 +163,7 @@ $app = JFactory::getApplication();
           change: function (value,label)
           {
              sec_role = label;
+             
              $('input#secondary_role_hidden_name').val(sec_role);
            
                 if((sec_role == pr_role) || (sec_role == ad_role))
@@ -176,6 +178,15 @@ $app = JFactory::getApplication();
                 
                  }else{
                      role_error = false;
+                 }
+                 
+                 
+                 if(value != 0){
+                     $('input#wage_hr_secondary').removeClass('main_forms_field');
+                     $('input#wage_hr_secondary').addClass('main_forms_field validate[required]');                     
+                 }else{
+                     $('input#wage_hr_secondary').removeClass('main_forms_field validate[required]');
+                     $('input#wage_hr_secondary').addClass('main_forms_field');                                          
                  }
           }
       });
@@ -197,6 +208,15 @@ $app = JFactory::getApplication();
                  }else{
                      role_error = false;
                  }
+                 
+                 
+                 if(value != 0){
+                     $('input#wage_hr_additional').removeClass('main_forms_field');
+                     $('input#wage_hr_additional').addClass('main_forms_field validate[required]');                     
+                 }else{
+                     $('input#wage_hr_additional').removeClass('main_forms_field validate[required]');
+                     $('input#wage_hr_additional').addClass('main_forms_field');                                          
+                 }
           }
       });
       $('.status').dropkick();
@@ -215,6 +235,24 @@ $app = JFactory::getApplication();
                   type_order_error = false;
                   $('p#type_other').hide();
               }
+              
+              if(value == 'pack')
+              {
+                  var in_resource_page = $('input#in_resources_page').val();
+                      if(in_resource_page == 'yes')
+                      {
+                          $('div#packers_table_wrapper').show();
+                          $('div#loaders_table_wrapper').hide();
+                      }                  
+              }else{
+                  var in_resource_page = $('input#in_resources_page').val();
+                      if(in_resource_page == 'yes')
+                      {
+                          $('div#packers_table_wrapper').hide();
+                          $('div#loaders_table_wrapper').show();
+                      }                  
+              }
+              
           }
       });
         

@@ -99,10 +99,34 @@ class RednetViewOrders  extends JView
                     $this->assignRef('fleets', $fleets);
                 }
                 
+                $fleets_not_assigned = JRequest::getVar('fleets_not_assigned');
+                if(isset($fleets_not_assigned))
+                {
+                    $this->assignRef('fleets_not_assigned', $fleets_not_assigned);
+                }
+                
+                $fleets_assigned = JRequest::getVar('fleets_assigned');
+                if(isset($fleets_assigned))
+                {
+                    $this->assignRef('fleets_assigned', $fleets_assigned);
+                }
+                
                 $rentals = JRequest::getVar('rentals');
                 if(isset($rentals))
                 {
                     $this->assignRef('rentals', $rentals);
+                }
+                
+                $rentals_not_assigned = JRequest::getVar('rentals_not_assigned');
+                if(isset($rentals_not_assigned))
+                {
+                    $this->assignRef('rentals_not_assigned', $rentals_not_assigned);
+                }
+                
+                $rentals_assigned = JRequest::getVar('rentals_assigned');
+                if(isset($rentals_assigned))
+                {
+                    $this->assignRef('rentals_assigned', $rentals_assigned);
                 }
                 
                 $all_loaders = JRequest::getVar('all_loaders');
@@ -110,6 +134,15 @@ class RednetViewOrders  extends JView
                 {
                     $this->assignRef('all_loaders', $all_loaders);
                 }                                                     
+                
+                
+                $ad_on_orders = JRequest::getVar('ad_on_orders');
+                if(isset($ad_on_orders))
+                {
+                    $this->assignRef('ad_on_orders', $ad_on_orders);
+                }                                                     
+                
+                
 		parent::display($tpl);
 	}
 }

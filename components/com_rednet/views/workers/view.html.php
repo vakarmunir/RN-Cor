@@ -43,6 +43,8 @@ class RednetViewWorkers  extends JView
 		$this->assignRef('pagination', $pagination);
 		
                 // ====== set application vars here ========
+                
+                
                 $msg = JRequest::getVar('msg');
                 if(isset($msg))
                 {

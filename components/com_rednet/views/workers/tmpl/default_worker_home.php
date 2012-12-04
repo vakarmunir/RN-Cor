@@ -63,6 +63,6 @@ Where
                 $app->redirect($url);
             }
 
-
+$app->redirect(JURI::root()."index.php/component/rednet/ordersoncalendar");
 
 ?>

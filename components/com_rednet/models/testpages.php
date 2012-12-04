@@ -24,6 +24,9 @@ class RednetModelTestpages  extends JModelItem {
 	
 	
 	protected $context = 'com_rednet.testpages';   
+        public $_name = NULL;
+        public $_status = NULL;
+        
 	/**
 	 * Method to auto-populate the model state.
 	 *
@@ -31,6 +34,35 @@ class RednetModelTestpages  extends JModelItem {
 	 *
 	 * @since	1.6
 	 */
+        
+        public function insert_testpage()
+        {
+            $db = JFactory::getDbo();
+            $query= "INSERT INTO #__testpages (name,status) VALUES ('$this->_name','$this->_status')";
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());            
+        }
+        
+        public function get_all_testpage()
+        {
+            $db = JFactory::getDbo();
+            $query= "SELECT * FROM #__testpages";
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());
+            $all_test_pages = $db->loadObjectList();
+            return $all_test_pages;
+        }
+        
+        public function get_a_testpage_by_id($id)
+        {
+            $db = JFactory::getDbo();
+            $query= "SELECT * FROM #__testpages WHERE id=$id";
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());
+            $a_test_page = $db->loadObject();
+            return $a_test_page;
+        }
+        
 	public function populateState()
 	{
 		$app = JFactory::getApplication();

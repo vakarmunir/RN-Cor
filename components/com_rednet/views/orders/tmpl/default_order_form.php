@@ -3,10 +3,9 @@
 defined('_JEXEC') or die('Restricted access');
 JHtml::_ ( 'behavior.formvalidation' );
 
-
-
 $app = JFactory::getApplication();
 $form_data = $this->form_data;
+$ordertypes = $form_data['ordertypes'];
 $ad_on_orders = $form_data['ad_on_orders'];
 
 $heading = '';
@@ -15,7 +14,7 @@ $add_on_txt = '';
 if($form_data['is_addon'])
 {
     $add_on_txt = 'Add-on ';
-}
+}    
 
 if($form_data['action']=='add')
 {
@@ -28,13 +27,26 @@ if($form_data['action']=='update')
 }
 
 $order = $this->order;
+//var_dump($order);
 
 if($order->departure_time != NULL)
 {
     $dep_time = date('h:i:s A',strtotime($order->departure_time));
+    
+    //if add-on order receiving Departure Time
+    if( isset($form_data['dt']) )
+    {
+        $dep_time = date('h:i:s A',strtotime($form_data['dt']));
+    }
+    
 }else
 {
-    $dep_time = date('h:i:s A',strtotime('07:30:00 AM'));
+    $dep_time = date('h:i:s A',strtotime('07:30:00 AM'));    
+    //if add-on order receiving Departure Time
+    if( isset($form_data['dt']) )
+    {
+        $dep_time = date('h:i:s A',strtotime($form_data['dt']));
+    }
 }
 
 $time_array = array();
@@ -170,6 +182,23 @@ function validate_order(){
                     }                
             }
             
+            
+            
+              if($('input#instruction_file').val() != '')
+              {
+                if($('input#old_instruction_file').val() != '')
+                {
+                    var msg = confirm("A file is already attached to this order, do you want to replace it?");                
+                    if(msg == false)
+                    {
+                        if(navigator.appName == "Microsoft Internet Explorer")
+                            event.returnValue = false;
+                        else
+                            return false;
+                    }                
+                }
+              }
+            
             return return_val;
 }
 </script>
@@ -199,7 +228,10 @@ function validate_order(){
             var p_o= "<?php echo "$order->id"; ?>";
             var m = $('#no_of_men').val();
             var t = $('#no_of_trucks').val();
-            var qry_string = "p_o="+p_o+"&m="+m+"&t="+t;
+            var tr = $('#dl_no2').val();
+            var od = $('#date_order').val();
+            var dt = $('#date_order').val();
+            var qry_string = "p_o="+p_o+"&m="+m+"&t="+t+"&tr="+tr+"&od="+od+"&dt="+dt;
         
             var path =server+"<?php echo "index.php/component/rednet/orders?task=order_form&";?>"+qry_string;            
             window.location = path;
@@ -237,7 +269,8 @@ function validate_order(){
           
           <input type="hidden" name="is_addon" id="is_addon" value="<?php echo (isset($order->is_addon) && $order->is_addon!='0')?($order->is_addon):( ($form_data['is_addon']=='1')?'1':'0' ) ;?>" />
           <input type="hidden" name="parent_order" id="parent_order" value="<?php echo isset($order->parent_order)?($order->parent_order):(JRequest::getVar('p_o'));?>" />
-    
+          <input name="order_no_same" type="hidden" value="<?php echo $order->order_no;?>" />
+          
 <table width="100%" border="0">
   <tr>
     <td><p class="field_para">        
@@ -256,7 +289,7 @@ function validate_order(){
     <p class="field_para">
       <label for="date_order">Date (mm/dd/yyyy)</label>
       
-<input name="date_order" type="text" class="main_forms_field required" id="date_order" tabindex="3" value="<?php echo (isset($order->date_order))?(date('m/d/Y',strtotime($order->date_order))):('');?>">
+<input name="date_order" type="text" class="main_forms_field required" id="date_order" tabindex="3" value="<?php echo (isset($order->date_order))?(date('m/d/Y',strtotime($order->date_order))):('');?><?php echo (isset($form_data['od']))?(date('m/d/Y',strtotime($form_data['od']))):('')?>">
     </p>
     
     
@@ -299,22 +332,20 @@ function validate_order(){
     <td><p class="field_para">
       <label for="type_order">Order Type</label>
       <select name="type_order" id="type_order" class="type_order" style="width: 135px;">
-        <option value="0"> -- Select --</option>
-        <option value="move" <?php echo ($order->type_order=='move')?('selected=selected'):('')?>>Move</option>
-        <option value="move_fmi" <?php echo ($order->type_order=='move_fmi')?('selected=selected'):('')?>>Move/FMI</option>
-        <option value="fmi_move" <?php echo ($order->type_order=='fmi_move')?('selected=selected'):('')?>>FMI/Move</option>
-        <option value="fmi" <?php echo ($order->type_order=='fmi')?('selected=selected'):('')?>>FMI</option>
-        <option value="wbe" <?php echo ($order->type_order=='pack')?('selected=selected'):('')?>>PACK</option>
-        <option value="others" <?php echo ($order->type_order=='others')?('selected=selected'):('')?>>others</option>
+        <option value="0"> -- Select --</option>        
+        <?php foreach ($ordertypes as $ordertype): ?>
+            <option value="<?php echo $ordertype->value; ?>" <?php echo ($order->type_order==$ordertype->value)?('selected=selected'):('')?>><?php echo $ordertype->name?></option>
+        <?php endforeach; ?>
+      
       </select>
       <label for="type_order"></label>
     </p></td>
     <td><p class="field_para">
-      <label for="no_of_trucks">No Of Men</label><input name="no_of_men" type="text" class="main_forms_field_date required" id="no_of_men" tabindex="4" value="<?php echo $order->no_of_men;?><?php echo (isset($form_data['m']))?($form_data['m']):('')?>" />
+      <label for="no_of_trucks">No Of Men</label><input name="no_of_men" type="text" class="main_forms_field_date required" id="no_of_men" tabindex="4" value="<?php echo $order->no_of_men;?><?php echo (isset($form_data['m']) && $order->no_of_men == NULL)?($form_data['m']):('')?>" />
     </p></td>
     <td><p class="field_para">
       <label for="no_of_trucks">No Of Truck(s)</label>
-      <input name="no_of_trucks" type="text" class="main_forms_field_date required" id="no_of_trucks" tabindex="5" value="<?php echo $order->no_of_trucks;?><?php echo (isset($form_data['t']))?($form_data['t']):('')?>"  />
+      <input name="no_of_trucks" type="text" class="main_forms_field_date required" id="no_of_trucks" tabindex="5" value="<?php echo $order->no_of_trucks;?><?php echo (isset($form_data['t']) && $order->no_of_trucks==NULL)?($form_data['t']):('')?>"  />
     </p></td>
     </tr>
   <tr>
@@ -329,7 +360,7 @@ function validate_order(){
   <tr>
     <td><p class="field_para">
       <label for="dl_no2">Truck Requirments</label>
-      <input name="truck_requirments" type="text" class="main_forms_field required" id="dl_no2" tabindex="6" value="<?php echo $order->truck_requirments;?>" />
+      <input name="truck_requirments" type="text" class="main_forms_field required" id="dl_no2" tabindex="6" value="<?php echo $order->truck_requirments;?><?php echo (isset($form_data['tr']) && $order->truck_requirments==NULL)?($form_data['tr']):('')?>" />
     </p></td>
     <td><p class="field_para">
       <label for="class2">Out of town</label>    

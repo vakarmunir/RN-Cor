@@ -47,7 +47,7 @@ class RednetViewOrdersoncalendar  extends JView
 		$items = $this->get( 'Items' );
                                 
 		$this->assignRef( 'items', $items);
-		
+	
                 
                 $data = JRequest::getVar('data');
                 $this->assignRef( 'data', $data);
@@ -56,7 +56,11 @@ class RednetViewOrdersoncalendar  extends JView
 		$this->assignRef('pagination', $pagination);
 		
                 
-             
+                $layout = JRequest::getVar('layout');
+                if(isset($layout))
+                {
+                    $this->setLayout($layout);
+                }                               
                 
 		parent::display($tpl);
 	}

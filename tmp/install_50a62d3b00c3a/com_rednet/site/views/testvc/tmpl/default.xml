@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="Testvc">
+		<help
+			key = "Testvc_DESC"
+		/>
+		<message>
+			<![CDATA[Testvc_DESC]]>
+		</message>
+	</layout>
+	<state>
+	<name>Testvc Layout</name>
+		<description>Testvc Layout_DESC</description>	
+		<params>
+		</params>
+	</state>
+	
+	<!-- Fields for Joomla > 1.5. -->
+	<fields name="request">
+		<fieldset name="request"
+			addfieldpath="/administrator/components/com_rednet/models/fields"
+		>
+			<field name="sample"
+				type="rednettestvc"
+				description="Testvc_SELECT_DESC"
+				label="Select Testvc"
+				required="false"
+			/>
+		</fieldset>
+	</fields>	
+	<!-- Add fields to the parameters object for the layout. -->
+	<fields name="params">
+	</fields>
+</metadata>

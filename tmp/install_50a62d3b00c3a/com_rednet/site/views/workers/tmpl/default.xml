@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="Workers">
+		<help
+			key = "Workers_DESC"
+		/>
+		<message>
+			<![CDATA[Workers_DESC]]>
+		</message>
+	</layout>
+	<state>
+	<name>Workers Layout</name>
+		<description>Workers Layout_DESC</description>	
+		<url addpath="/administrator/components/com_rednet/elements">
+			<param name="id" type="workers" default="0" label="Select Workers" description="A Workers" />
+		</url>
+		<params>
+		</params>
+	</state>
+	
+	<!-- Fields for Joomla > 1.5. -->
+	<fields name="request">
+		<fieldset name="request"
+			addfieldpath="/administrator/components/com_rednet/models/fields"
+		>
+			<field name="id"
+				type="rednetworkers"
+				description="Workers_SELECT_DESC"
+				label="Select Workers"
+				required="true"
+			/>
+		</fieldset>
+	</fields>	
+	<!-- Add fields to the parameters object for the layout. -->
+	<fields name="params">
+	</fields>
+</metadata>

@@ -41,9 +41,20 @@ class RednetViewTestpages  extends JView
 		$this->assignRef('params', $params);
 		$this->assignRef('pagination', $pagination);
 		
-                $layout= JRequest::getVar('layout');
-                $l= JRequest::get();
-                //var_dump($l);
+                
+                //=============================== 
+                
+                
+                
+                $heading_data = JRequest::getVar('my_data');
+                
+                if(isset($heading_data))
+                {
+                    $this->assignRef('h1', $heading_data);                    
+                }                
+                
+                $layout=  JRequest::getVar('layout');
+                //echo 'you are making layout='.$layout;
                 
                 if(isset($layout))
                 {
@@ -51,6 +62,28 @@ class RednetViewTestpages  extends JView
                 }
                 
                 
+                $waqar=  JRequest::getVar('waqar');
+               
+                if(isset($waqar))
+                {
+                    $this->assignRef('waqar',$waqar);
+                } 
+                
+                $all_test_pages=  JRequest::getVar('all_test_pages');
+               
+                if(isset($all_test_pages))
+                {
+                    $this->assignRef('all_test_pages',$all_test_pages);
+                } 
+                
+                $a_test_page=  JRequest::getVar('a_test_page');
+               
+                if(isset($a_test_page))
+                {
+                    $this->assignRef('a_test_page',$a_test_page);
+                } 
+                
+                //===============================
 		parent::display($tpl);
 	}
 }

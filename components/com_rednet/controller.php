@@ -39,10 +39,31 @@ class RednetController extends JController
 
 		JRequest :: setVar('view', $this->_viewname);
                 $db = JFactory::getDbo();
-                
+                $session = JFactory::getSession();
+                    
                 $user = JFactory::getUser();
                 if($user->id == 0)
                 {
+                
+                    $r = $_SERVER['REQUEST_URI'];
+                    if(isset($r) && $r!=NULL)
+                    {                    
+                        $return_url = $r;
+                        $session->set('return_url',$return_url);                                                                       
+                        //echo "here.....".$return_url;                     
+                    }
+                    
+                    
+                    $r_url = $session->get('return_url');                    
+                    if(isset($r_url) && $r_url!=NULL)
+                    {
+                        $url = $r_url;                        
+                        //echo "last url = ".$url;
+                        //exit;
+                    }
+                    
+                    
+                    
                     $url = JURI::base();
                     $this->setRedirect($url);
                     $this->redirect();

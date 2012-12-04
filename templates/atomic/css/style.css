@@ -6,6 +6,25 @@
   padding: 0;
 }
 
+.view_file_button{
+                  border: 0px solid red;
+                  height: 30px;
+                  width: 188px;
+                  margin-left: 15px;
+                  margin-top: 10px;
+                  padding-top: 3px;                  
+                  background-image: url("../images/instruction_file.png");
+              }
+              
+.view_file_button p a{
+                    font-family: arial !important;
+                    font-size: 12px !important;
+                    text-decoration: none !important;
+                    color: #000 !important;
+                    font-weight: bold !important;
+                    margin-left: 15px !important;
+              }
+              
 .green_class
 {
     background-color: #292 !important;
@@ -97,6 +116,7 @@
     text-align: center !important;
     vertical-align: middle !important;
     font-size: 12px !important;
+    cursor: default !important;
 }
 .truck_class{
     border: 1px solid red !important;
@@ -129,7 +149,7 @@ span.drop_msg
 		.right{
 /*			float:right;*/
 			width:600px;
-                        min-height: 160px;
+                        min-height: 105px;
 		}
 		.right table{
 			background:#E0ECFF;
@@ -150,6 +170,7 @@ span.drop_msg
 		}
 		.right td.resource_cell{
 			background:#fafafa;
+                        font-size: 12px;
 /*			width:100px;*/
 		}
 		.right td.over{
@@ -365,7 +386,7 @@ input[name="calendar_but"],input[name="week_but"]
         padding-top: 20px;
         margin-left: 100px;
         background-repeat: no-repeat;
-    min-height: 515px;
+    min-height: 415px;
     margin-left: 20px;
     width: 760px !important;
     

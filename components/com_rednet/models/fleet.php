@@ -117,6 +117,62 @@ class RednetModelFleet  extends JModelItem {
         }
         
       
+        public function getFleetsNotAssigned()
+        {                      
+            $db = JFactory::getDbo();            
+            $query = "
+                Select
+                    #__vehicles_fleet.name,
+                    #__vehicles_fleet.type,
+                    #__vehicles_fleet.id,
+                    #__vehicles_fleet.from_date,
+                    #__vehicles_fleet.to_date,
+                    #__resourcesmap.truck,
+                    #__resourcesmap.truck_type,
+                    #__resourcesmap.order_id,
+                    #__resourcesmap.user_id,
+                    #__resourcesmap.id As rs_map_id
+                 From
+                    #__vehicles_fleet Left Join
+                    #__resourcesmap On #__vehicles_fleet.id =
+                        #__resourcesmap.truck
+                  Where
+                    #__resourcesmap.truck Is Null                                                                        
+            ";               
+                               //2012-11-20<2012-11-19  AND 2012-12-01 > 2012-11-19         
+            //(#__vehicles_fleet.from_date < 2012-11-19 AND #__vehicles_fleet.to_date > 2012-11-19)
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());
+            $fleets = $db->loadObjectList();
+            return $fleets;
+        }
+        
+        public function getFleetsAssigned()
+        {                      
+            $db = JFactory::getDbo();            
+            $query = "
+                Select
+                #__resourcesmap.id,
+                #__resourcesmap.order_id,
+                #__resourcesmap.user_id,
+                #__resourcesmap.truck,
+                #__resourcesmap.truck_type,
+                #__vehicles_fleet.id As fleet_id,
+                #__vehicles_fleet.name,
+                #__vehicles_fleet.type
+                From
+                #__resourcesmap Inner Join
+                #__vehicles_fleet On #__resourcesmap.truck =
+                    #__vehicles_fleet.id
+                    GROUP BY #__resourcesmap.truck 
+            ";               
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());
+            $fleets = $db->loadObjectList();
+            return $fleets;
+        }
+        
+      
         public function getFleetById($id)
         {                      
             $db = JFactory::getDbo();
@@ -139,15 +195,86 @@ class RednetModelFleet  extends JModelItem {
         
       
         public function getRentals()
-        {
-            
-          
-            $db = JFactory::getDbo();
-          
-            //echo $from;
-            
+        {                      
+            $db = JFactory::getDbo();          
             $query = "SELECT * FROM #__vehicles_rental";   
             
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());
+            $fleets = $db->loadObjectList();
+            return $fleets;
+        }
+        
+        
+        
+        
+        public function getnNotAssignedRentalsByUpCommingToDates()
+        {                      
+            $db = JFactory::getDbo();          
+            //$query = "SELECT * FROM #__vehicles_rental WHERE to_date >= NOW()";               
+            
+            $query = "
+            Select
+                #__vehicles_rental.id,
+                #__vehicles_rental.name,
+                #__vehicles_rental.type,
+                #__resourcesmap.id As rs_map_id,
+                #__resourcesmap.order_id,
+                #__resourcesmap.user_id,
+                #__resourcesmap.truck,
+                #__resourcesmap.truck_type,
+                #__vehicles_rental.to_date,
+                #__vehicles_rental.from_date
+             From
+                #__vehicles_rental Left Join
+                #__resourcesmap On #__vehicles_rental.id =
+                    #__resourcesmap.truck
+             Where
+                #__resourcesmap.truck Is Null And
+                #__vehicles_rental.to_date >= Now()
+            ";               
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());
+            $fleets = $db->loadObjectList();
+            return $fleets;
+        }
+        
+      
+        public function getAssignedRentals()
+        {                      
+            $db = JFactory::getDbo();          
+            //$query = "SELECT * FROM #__vehicles_rental WHERE to_date >= NOW()";               
+            
+            $query = "
+            Select
+                #__vehicles_rental.id,
+                #__vehicles_rental.name,
+                #__vehicles_rental.type,
+                #__vehicles_rental.to_date,
+                #__resourcesmap.id As id1,
+                #__resourcesmap.order_id,
+                #__resourcesmap.user_id,
+                #__resourcesmap.truck,
+                #__resourcesmap.truck_type
+            From
+                #__vehicles_rental Inner Join
+                #__resourcesmap On #__vehicles_rental.id =
+                    #__resourcesmap.truck
+            GROUP BY #__resourcesmap.truck
+            ";               
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());
+            $fleets = $db->loadObjectList();
+            return $fleets;
+        }
+        
+      
+        public function getRentalsByUpCommingToDates()
+        {                      
+            $db = JFactory::getDbo();          
+            //$query = "SELECT * FROM #__vehicles_rental WHERE to_date >= NOW()";               
+            
+            $query = "SELECT * FROM #__vehicles_rental WHERE to_date >= NOW()";               
             $db->setQuery($query);
             $db->query() or die(mysql_error());
             $fleets = $db->loadObjectList();

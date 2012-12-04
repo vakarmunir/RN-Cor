@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="Testpages">
+		<help
+			key = "Testpages_DESC"
+		/>
+		<message>
+			<![CDATA[Testpages_DESC]]>
+		</message>
+	</layout>
+	<state>
+	<name>Testpages Layout</name>
+		<description>Testpages Layout_DESC</description>	
+		<url addpath="/administrator/components/com_rednet/elements">
+			<param name="id" type="testpages" default="0" label="Select Testpages" description="A Testpages" />
+		</url>
+		<params>
+		</params>
+	</state>
+	
+	<!-- Fields for Joomla > 1.5. -->
+	<fields name="request">
+		<fieldset name="request"
+			addfieldpath="/administrator/components/com_rednet/models/fields"
+		>
+			<field name="id"
+				type="rednettestpages"
+				description="Testpages_SELECT_DESC"
+				label="Select Testpages"
+				required="true"
+			/>
+		</fieldset>
+	</fields>	
+	<!-- Add fields to the parameters object for the layout. -->
+	<fields name="params">
+	</fields>
+</metadata>

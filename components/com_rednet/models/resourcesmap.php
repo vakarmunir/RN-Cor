@@ -28,9 +28,11 @@ class RednetModelResourcesmap  extends JModelItem {
         public $_order_id;
         public $_user_id;
         public $_truck;
+        public $_truck_type;
         public $_status;
         public $_created_date;
-
+        public $_worker_role;
+        
         protected $_db;
 	/**
 	 * Method to auto-populate the model state.
@@ -52,8 +54,7 @@ class RednetModelResourcesmap  extends JModelItem {
                 $db  = JFactory::getDbo();
                 
                 $this->_db = $db;
-                
-                
+                                
 		// Load the parameters.
 		//TODO: componenthelper
 		//$this->setState('params', $params);
@@ -121,16 +122,20 @@ class RednetModelResourcesmap  extends JModelItem {
                         order_id,
                         user_id,
                         truck,
+                        truck_type,
                         status,
-                        created_date
+                        created_date,
+                        worker_role
                         ) VALUES
 
                         (
                         '$this->_order_id',
                         '$this->_user_id',
                         '$this->_truck',
+                        '$this->_truck_type',
                         '$this->_status',
-                        '$date'
+                        '$date',
+                        '$this->_worker_role'
                         )";
 
             
@@ -140,10 +145,8 @@ class RednetModelResourcesmap  extends JModelItem {
         }
         public function get_resourcesmap_by_order_id($order_id)
         {
-            $db = $this->_db;
-            
-            $query = "SELECT * FROM #__resourcesmap WHERE order_id = $order_id";            
-            
+            $db = $this->_db;            
+            $query = "SELECT * FROM #__resourcesmap WHERE order_id = $order_id";                                   
             $db->setQuery($query);
             $db->query() or die(mysql_error());
             $rs = $db->loadObjectList();
@@ -162,6 +165,79 @@ class RednetModelResourcesmap  extends JModelItem {
             WHERE id = $rs_id";                        
             $db->setQuery($query);
             $db->query() or die(mysql_error());            
+        }
+        
+        
+        public function set_field_by_value($rcd_id,$field,$value)
+        {
+            $db = $this->_db;            
+            $query = "UPDATE #__resourcesmap 
+            SET
+            $field = '$value'
+            WHERE id = $rcd_id";                        
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());            
+        }
+        
+        public function get_resourcemap_by_id($id)
+        {
+            
+            $db = $this->_db;            
+            $query = "SELECT * FROM #__resourcesmap WHERE id = $id";                                    
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());                        
+            return $db->loadObject();
+        }
+        
+        
+        public function get_resourcemap_by_UserId_and_OrderId($user_id,$order_id)
+        {            
+            $db = $this->_db;            
+            $query = "SELECT * FROM #__resourcesmap WHERE user_id = $user_id and order_id=$order_id";                                    
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());                        
+            return $db->loadObject();
+        }
+        
+        // Summary : this function is used to get resources map by worker_id and order_date by joining through order_id        
+        public function get_resourcemap_by_UserId_OrderId_OrdderDate($user_id,$order_id,$order_date)
+        {            
+            $db = $this->_db;            
+            $query = "
+            Select
+                #__resourcesmap.id,
+                #__resourcesmap.order_id,
+                #__resourcesmap.user_id,
+                #__resourcesmap.truck,
+                #__resourcesmap.truck_type,
+                #__resourcesmap.status,
+                #__orders.id As order_id1,
+                #__orders.order_no,
+                #__orders.name,
+                #__orders.date_order,
+                #__orders.type_order,
+                #__orders.type_if_other
+             From
+                #__resourcesmap Left Join
+                #__orders On #__resourcesmap.order_id = #__orders.id
+             Where
+                #__orders.id = #__resourcesmap.order_id And
+                (#__resourcesmap.user_id = $user_id And
+                #__orders.date_order = '$order_date')
+            ";                                    
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());                        
+            return $db->loadObject();
+        }
+        
+        
+        public function get_resourcemap_by_userId($user_id)
+        {            
+            $db = $this->_db;            
+            $query = "SELECT * FROM #__resourcesmap WHERE user_id = $user_id";                                    
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());                        
+            return $db->loadObjectList();
         }
         
         

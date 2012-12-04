@@ -29,9 +29,6 @@ if(isset($worker_id) && $worker_id!=NULL)
     $av_add_string = "index.php/component/rednet/availabilitycalendar?task=av_sending_date&user_id=$user_id";
 }
 
-
-
-
 $db = JFactory::getDbo();
 
                    $group_qry = "                       
@@ -100,7 +97,10 @@ function make_calendar()
                                     function(data) {                                    
                                         current_id = data;
                                          
-                                         if(current_id.length != 0)
+                                         
+                                         
+                                         //if(current_id.length != 0)
+                                         if(parseInt(current_id) > 0)
                                          {
                                                 calendar.fullCalendar('renderEvent',
 						{
@@ -111,10 +111,18 @@ function make_calendar()
                                                         e_id : current_id
 						},
 						false // make the event "stick"
-                                            );                                                                                                
+                                            );
+                                                
+                                                $('#save_and_exit').show();
                                          }
                                          
-                                         $('#save_and_exit').show();
+                                         if(parseInt(current_id) == 0)
+                                         {
+                                             alert('Worker have assigned order(s) at this date.');
+                                         }
+                                         
+                                         
+                                         
                                 });
                                 
                                                                
@@ -148,7 +156,6 @@ function make_calendar()
 		
 }
 </script>
-
 
 
 <script type="text/javascript">
@@ -185,12 +192,10 @@ function make_calendar()
 
 
 <style type='text/css'>
-
 	#calendar {
 		width: 700px;
 		margin: 0 auto;
 		}
-
 </style>
 
 
@@ -208,9 +213,11 @@ function make_calendar()
             <td style="vertical-align: middle">
                 <select name="workers_list" id="workers_list" class="workers_list" style="width: 135px;">
                     <option value="0"> -- Select --</option>
-                    <?php foreach($this->workers as $worker): ?>
+                    <?php foreach($this->workers as $worker):
+                        if($worker->status == '1'){
+                    ?>
                         <option value="<?php echo $worker->user_id ?>" <?php echo ($worker_id==$worker->user_id)?('selected=selected'):('')?>><?php echo $worker->first_name.' '.$worker->last_name; ?></option>
-                    <?php endforeach; ?>
+                    <?php } endforeach; ?>
                 </select>    
       </td>
   </tr>

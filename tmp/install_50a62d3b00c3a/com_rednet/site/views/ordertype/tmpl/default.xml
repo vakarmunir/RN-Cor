@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="Ordertype">
+		<help
+			key = "Ordertype_DESC"
+		/>
+		<message>
+			<![CDATA[Ordertype_DESC]]>
+		</message>
+	</layout>
+	<state>
+	<name>Ordertype Layout</name>
+		<description>Ordertype Layout_DESC</description>	
+		<url addpath="/administrator/components/com_rednet/elements">
+			<param name="id" type="ordertype" default="0" label="Select Ordertype" description="A Ordertype" />
+		</url>
+		<params>
+		</params>
+	</state>
+	
+	<!-- Fields for Joomla > 1.5. -->
+	<fields name="request">
+		<fieldset name="request"
+			addfieldpath="/administrator/components/com_rednet/models/fields"
+		>
+			<field name="id"
+				type="rednetordertype"
+				description="Ordertype_SELECT_DESC"
+				label="Select Ordertype"
+				required="true"
+			/>
+		</fieldset>
+	</fields>	
+	<!-- Add fields to the parameters object for the layout. -->
+	<fields name="params">
+	</fields>
+</metadata>

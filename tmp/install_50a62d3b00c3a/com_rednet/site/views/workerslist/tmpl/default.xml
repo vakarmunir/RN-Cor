@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="Workerslist">
+		<help
+			key = "WorkersLIST_DESC"
+		/>
+		<message>
+			<![CDATA[WorkersLIST_DESC]]>
+		</message>
+	</layout>
+	<state>
+	<name>Workers List Layout</name>
+		<description>Workers List Layout_DESC</description>	
+		<params>
+		</params>
+	</state>
+	<!-- Add fields to the parameters object for the layout. -->
+	<fields name="params">
+	</fields>
+</metadata>

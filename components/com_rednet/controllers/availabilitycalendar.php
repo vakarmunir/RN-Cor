@@ -43,9 +43,7 @@ class RednetControllerAvailabilitycalendar extends RednetController
         public function get_availabilities()
         {
                                  
-                $user = $this->_user;
-                
-                
+                $user = $this->_user;                                
                 $worker_id = JRequest::getVar('worker_id');
                 
                 if(isset($worker_id) && $worker_id!=NULL)
@@ -54,14 +52,10 @@ class RednetControllerAvailabilitycalendar extends RednetController
                 }else{
                     $userId = $user->id;
                 }
-
-                
-                
-                
+                                                
                 $model = $this->getModel('availabilitycalendar');
                 $availability = $model->get_user_availabilitycalendar($userId); 
-                $main_array = array();
-                //var_dump($availability);
+                $main_array = array();                
                 
                 foreach($availability as $av)
                 {
@@ -76,9 +70,8 @@ class RednetControllerAvailabilitycalendar extends RednetController
         
         public function availability()
         {
-            $user = $this->_user;
-            
-                $worker_id = JRequest::getVar('worker_id');
+            $user = $this->_user;            
+            $worker_id = JRequest::getVar('worker_id');
                 
                 if(isset($worker_id) && $worker_id!=NULL)
                 {
@@ -88,31 +81,25 @@ class RednetControllerAvailabilitycalendar extends RednetController
                 }
 
             
-            $model = $this->getModel('availabilitycalendar');
-            
-            $model_worker = $this->getModel('workers');
-            
-            
-            
+            $model = $this->getModel('availabilitycalendar');            
+            $model_worker = $this->getModel('workers');                                    
             $workers =  $model_worker->getAllWorkers();
             
-            
-            
-            $av_day = array();
-            
+            $av_day = array();            
             $current_month = JRequest::getVar('current_month');
-            
+           /* 
             if(isset($current_month))
             {
-                $month = $current_month;
+                $month = $current_month;                
             }else
             {
                 $month = 1;
             }
+            */
             
-            
+            $month = NULL;
             $av_sun = $model->get_user_availabilit_of_day($userId,'sun',$month);
-            $av_day["sun"]=$av_sun;
+            $av_day["sun"]=$av_sun;                                    
             
             $av_mon = $model->get_user_availabilit_of_day($userId,'mon',$month);
             $av_day["mon"]=$av_mon;
@@ -141,14 +128,9 @@ class RednetControllerAvailabilitycalendar extends RednetController
             parent::display();
         }
         public function week_availability()
-        {
-            
-            
-            $user = $this->_user;                        
-            
-            
-            $user_id = JRequest::getVar('user_id');
-            
+        {                        
+            $user = $this->_user;                                                
+            $user_id = JRequest::getVar('user_id');            
             $model = $this->getModel('availabilitycalendar');
                         
             $current_month = JRequest::getVar('current_month');
@@ -171,10 +153,13 @@ class RednetControllerAvailabilitycalendar extends RednetController
             $sat = JRequest::getVar('sat');
             
             // Adding days availibilites.....
+            $month_to_start = date('m');
             
-          for ($li=1; $li<=12; $li++)  
-          {
-              $month = $li;
+          //for ($li=$month_to_start; $li<=12; $li++)  
+          //{
+          
+              $month = $month_to_start;
+             // $month = $li;
           
             if($sun == 'on')
             {   
@@ -264,7 +249,7 @@ class RednetControllerAvailabilitycalendar extends RednetController
             }
            
             
-          }
+          //}
             $user_state = JRequest::getVar('user_state');
             
             
@@ -279,6 +264,8 @@ class RednetControllerAvailabilitycalendar extends RednetController
             }
                         
             
+            //exit;
+         
             $this->setRedirect($url);
             $this->redirect;
             
@@ -291,10 +278,13 @@ class RednetControllerAvailabilitycalendar extends RednetController
            $year = JRequest::getVar('year');
            $user = $this->_user;
            
+           $out_put = '';
+           
            $user_id = JRequest::getVar('user_id');
            
             $av_date = date('Y-m-d',strtotime($year.'-'.$month.'-'.$day));
             $model = $this->getModel('availabilitycalendar');
+            $rs_map_model = $this->getModel('resourcesmap');
            
             $av_by_date = $model->get_user_availabilitycalendar_by_date($av_date,$user_id);
             
@@ -302,11 +292,23 @@ class RednetControllerAvailabilitycalendar extends RednetController
             {
                 if(!isset($av_by_date))
                 {
-                    $insert_id = $model->add_availabilitycalendar_complete($user_id,$av_date);
-                    echo $insert_id;
+                    
+                    
+                    $user_in_resources_map_with_avDate = $rs_map_model->get_resourcemap_by_UserId_OrderId_OrdderDate($user_id,NULL,$av_date);
+                    // checking if user has assigned order at that day.
+                    if(count($user_in_resources_map_with_avDate)>0)
+                    {
+                        $out_put = '0';
+                    }else{
+                        $insert_id = $model->add_availabilitycalendar_complete($user_id,$av_date);
+                        $out_put = $insert_id;
+                    }
+                    
+                    
                 }                                
             }
             
+            echo $out_put;
             exit();
         }
         public function av_remove_date()
@@ -330,21 +332,32 @@ class RednetControllerAvailabilitycalendar extends RednetController
                     $day_s_no_cntr = 1;                        
                     $year = date("Y");
 
+                    $time = strtotime(date('Y-m-d'));
+                    $ending_date = date("Y-m-d", strtotime("+12 month", $time));
+                    $ending_month = date('m',  strtotime($ending_date));
+                    $ending_year = date('Y',  strtotime($ending_date));
                     
                     $model = $this->getModel('availabilitycalendar');
 
                     while($flag)
                     {			
-                            $day_s_no = $day_s_no_cntr;	
+                            $day_s_no = $day_s_no_cntr;	                                                        
+                            
                             $reslutant_date = date('Y-m-d', strtotime("$month_text $year $day_s_no $day"));			
+                            
                             $resultant_month = strtolower( date("M",strtotime($reslutant_date)) );		
-                            if($resultant_month == $month_text)
+                            $resultant_month_in_num = strtolower( date("m",strtotime($reslutant_date)) );		
+                            $resultant_year = strtolower( date("Y",strtotime($reslutant_date)) );		
+                            
+
+                            if( ($resultant_month_in_num == $ending_month+1) && ($resultant_year == $ending_year))
+                                {$flag = false;}
+                            
+                            if($flag == true)
                             {
-                                            //echo "<br />insert this > ".$reslutant_date;                                            
                                  $model->add_availabilitycalendar_complete($user_id,$reslutant_date);
                             }	
-                            if($resultant_month != $month_text)
-                            {$flag = false;}
+                            
                             $day_s_no_cntr++;
                     } // end while
         }
@@ -374,33 +387,45 @@ class RednetControllerAvailabilitycalendar extends RednetController
                             $day_s_no_cntr++;
                     } // end while
         }
+        
         private function delete_availability_on_calendar($day,$month,$user_id)
         {
-              
+                    
                     $month_text =strtolower( date('M', mktime(0, 0, 0, $month, 1, 2000)) );            
                     $flag = true;
                     $day_s_no_cntr = 1;                        
                     $year = date("Y");
 
+                    $time = strtotime(date('Y-m-d'));
+                    $ending_date = date("Y-m-d", strtotime("+12 month", $time));
+                    $ending_month = date('m',  strtotime($ending_date));
+                    $ending_year = date('Y',  strtotime($ending_date));
                     
                     $model = $this->getModel('availabilitycalendar');
 
                     while($flag)
                     {			
-                            $day_s_no = $day_s_no_cntr;	
+                            $day_s_no = $day_s_no_cntr;	                                                        
+                            
                             $reslutant_date = date('Y-m-d', strtotime("$month_text $year $day_s_no $day"));			
+                            
                             $resultant_month = strtolower( date("M",strtotime($reslutant_date)) );		
-                            if($resultant_month == $month_text)
+                            $resultant_month_in_num = strtolower( date("m",strtotime($reslutant_date)) );		
+                            $resultant_year = strtolower( date("Y",strtotime($reslutant_date)) );		
+                            
+                              if( ($resultant_month_in_num == $ending_month+1) && ($resultant_year == $ending_year))
+                                {$flag = false;}
+                                
+                            if($flag == true)
                             {
-                                //echo $reslutant_date;
-                                $model->delete_availability_by_order_date($reslutant_date,$user_id);
+                                 $model->delete_availability_by_order_date($reslutant_date,$user_id);
                             }	
-                            if($resultant_month != $month_text)
-                            {$flag = false;}
+                            
                             $day_s_no_cntr++;
                     } // end while
-                    
-                    
         }
+        
+        
+        
 }// class
 ?>

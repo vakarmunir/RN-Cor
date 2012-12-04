@@ -203,8 +203,7 @@ $s .= "<records>".$count."</records>";
            
            $additional_role = JRequest::getVar("additional_role");
            $wage_hr_additional = JRequest::getVar("wage_hr_additional");
-              
-           
+                         
            $user = JFactory::getUser();
            
            $db = JFactory::getDbo();
@@ -257,12 +256,32 @@ $msg = "";
 $model = $this->getModel("workers");
 
 $rslt = $model->fieldValueCheck("email",$email);
-// == email duplicate check === if($rslt!=NULL)
-//  == email duplicate check === {
-    
+$cell_field = $model->fieldValueCheckWorker("cell",$cell);
+$home_field = $model->fieldValueCheckWorker("home",$home);
+
+$msg_field = '';
+
+if($rslt!=NULL || $cell_field!=NULL || $home_field!=NULL)
+{    
             $inner_display_check = true;            
             $layout = "default_add_worker";
-            $msg = "Worker already exist with email: $email";
+            
+            if($rslt!=NULL)
+            {
+                $msg_field = $msg_field." Email: $email";                
+            }
+            
+            if($cell_field!=NULL)
+            {
+                $msg_field = $msg_field." Cell: $cell";
+            }
+            
+            if($home_field!=NULL)
+            {
+                $msg_field = $msg_field." Home: $home";
+            }
+            
+            $msg = "Worker already exist with $msg_field";
             $form_data = JRequest::get();                                    
             JRequest::setVar('form_data',$form_data);
             
@@ -275,13 +294,14 @@ $rslt = $model->fieldValueCheck("email",$email);
             JRequest::setVar('primary_roles', $primary_roles);
             JRequest::setVar('secondary_roles', $secondary_roles);
             JRequest::setVar('additional_roles', $additional_roles);
-                                  
-      // == email duplicate check ===       JRequest::setVar('msg', $msg);
-     // == email duplicate check ===        JRequest::setVar('layout',$layout);            
-   // == email duplicate check ===          parent::display();
+                 
             
-  // == email duplicate check ===           return;                       
-// == email duplicate check ===   }
+             JRequest::setVar('msg', $msg);
+             JRequest::setVar('layout',$layout);            
+             parent::display();
+          
+           return;                       
+}
 
 
            $qry_user = "INSERT INTO #__users (
@@ -448,7 +468,8 @@ $rslt = $model->fieldValueCheck("email",$email);
                 $n = rand(0, strlen($alphabet)-1); //use strlen instead of count
                 $pass[$i] = $alphabet[$n];
             }
-            return implode($pass); //turn the array into a string
+                        
+            return substr(implode($pass),0,4); //turn the array into a string
         }
 
        private function sendVerificationEmail($user_id,$verification_code,$email,$password,$fname,$lname)
@@ -494,7 +515,7 @@ $rslt = $model->fieldValueCheck("email",$email);
 
             Username: $email <br />      
             Temporary Password:  $password <br />
-            Loing here: $config->host_path <br /><br />
+            <a href='".JURI::base()."'>Click here to login</a><br /><br />
             If you have any problem, please contact 416 CALL RED<br /><br />
 
             Thanks<br />

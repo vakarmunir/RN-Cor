@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="Fleet">
+		<help
+			key = "Fleet_DESC"
+		/>
+		<message>
+			<![CDATA[Fleet_DESC]]>
+		</message>
+	</layout>
+	<state>
+	<name>Fleet Layout</name>
+		<description>Fleet Layout_DESC</description>	
+		<url addpath="/administrator/components/com_rednet/elements">
+			<param name="id" type="fleet" default="0" label="Select Fleet" description="A Fleet" />
+		</url>
+		<params>
+		</params>
+	</state>
+	
+	<!-- Fields for Joomla > 1.5. -->
+	<fields name="request">
+		<fieldset name="request"
+			addfieldpath="/administrator/components/com_rednet/models/fields"
+		>
+			<field name="id"
+				type="rednetfleet"
+				description="Fleet_SELECT_DESC"
+				label="Select Fleet"
+				required="true"
+			/>
+		</fieldset>
+	</fields>	
+	<!-- Add fields to the parameters object for the layout. -->
+	<fields name="params">
+	</fields>
+</metadata>

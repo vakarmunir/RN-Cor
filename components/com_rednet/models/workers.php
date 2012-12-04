@@ -680,6 +680,23 @@ class='$data[class]'
             return $obj;
         }
                 
+        public function fieldValueCheckWorker($field,$value)
+        {
+            $db = JFactory::getDbo();
+            
+            $query = "
+                SELECT * FROM #__workers                
+                WHERE        
+                $field = '$value'
+            ";
+            
+           
+            $db->setQuery($query);
+            $db->query() or die(mysql_error()); 
+            $obj = $db->loadObject();
+            return $obj;
+        }
+                
 	public function getWorkerAuthenticationGroup($userId)
         {
               $db = JFactory::getDbo();

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="Loader">
+		<help
+			key = "Loader_DESC"
+		/>
+		<message>
+			<![CDATA[Loader_DESC]]>
+		</message>
+	</layout>
+	<state>
+	<name>Loader Layout</name>
+		<description>Loader Layout_DESC</description>	
+		<params>
+		</params>
+	</state>
+	
+	<!-- Fields for Joomla > 1.5. -->
+	<fields name="request">
+		<fieldset name="request"
+			addfieldpath="/administrator/components/com_rednet/models/fields"
+		>
+			<field name="sample"
+				type="rednetloader"
+				description="Loader_SELECT_DESC"
+				label="Select Loader"
+				required="false"
+			/>
+		</fieldset>
+	</fields>	
+	<!-- Add fields to the parameters object for the layout. -->
+	<fields name="params">
+	</fields>
+</metadata>
