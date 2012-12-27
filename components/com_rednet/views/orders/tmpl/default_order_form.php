@@ -10,10 +10,12 @@ $ad_on_orders = $form_data['ad_on_orders'];
 
 $heading = '';
 $add_on_txt = '';
+$readonly_field = '';
 
 if($form_data['is_addon'])
 {
     $add_on_txt = 'Add-on ';
+    $readonly_field = "readonly='readonly'";
 }    
 
 if($form_data['action']=='add')
@@ -95,6 +97,8 @@ function CompDate(adate,bdate,msg)
 function validate_order(){    
                                  
                  
+        
+       
         if($('select#hrs').val()==0)
         {
             alert('Please select Departure time correctly');
@@ -134,19 +138,37 @@ function validate_order(){
         }
         
         
-            if($('#instruction_file').val() != "")
+       var return_val = true;
+       var inst_files = $('input.instructionfile').get();        
+        $(inst_files).each(function(i,obj){            
+            if($(obj).val() != "")
             {
-                var ext = $('#instruction_file').val().split('.').pop().toLowerCase();
+                var rtrn_flg = true;
+                var ext = $(obj).val().split('.').pop().toLowerCase();
                 if($.inArray(ext, ['pdf','csv']) == -1) {
-                    alert('Invalid instructions file type!');
-                    if(navigator.appName == "Microsoft Internet Explorer")
+                    alert('Invalid instructions file type picked!');
+                        if(navigator.appName == "Microsoft Internet Explorer")
+                        {
                             event.returnValue = false;
-                        else
-                            return false;
+                            rtrn_flg = false;
+                            return rtrn_flg;
+                        }else
+                            {
+                                //return false;
+                                rtrn_flg = false;
+                                return_val = rtrn_flg;
+                                return false;
+                            }
+                           
                 }
+                
             }
+        
+            return_val = rtrn_flg;
+            return rtrn_flg;
+        });            
+        
             
-            var return_val = true;
             var required_fields = $('.form-validate').find('.required').get();
             $(required_fields).each(function(indx,obj){                
                 if($(obj).val()=='')
@@ -265,8 +287,7 @@ function validate_order(){
 <form class="form-validate" id="edit_worker_form" action="<?php echo JRoute::_("index.php/component/rednet/orders?task=order_form_save")?>" method="post" onSubmit="return validate_order();" enctype="multipart/form-data">
     
           <input type="hidden" name="id" id="id" value="<?php echo $order->id;?>" />
-          <input type="hidden" name="action" id="action" value="<?php echo $form_data['action'];?>" />
-          
+          <input type="hidden" name="action" id="action" value="<?php echo $form_data['action'];?>" />          
           <input type="hidden" name="is_addon" id="is_addon" value="<?php echo (isset($order->is_addon) && $order->is_addon!='0')?($order->is_addon):( ($form_data['is_addon']=='1')?'1':'0' ) ;?>" />
           <input type="hidden" name="parent_order" id="parent_order" value="<?php echo isset($order->parent_order)?($order->parent_order):(JRequest::getVar('p_o'));?>" />
           <input name="order_no_same" type="hidden" value="<?php echo $order->order_no;?>" />
@@ -289,7 +310,7 @@ function validate_order(){
     <p class="field_para">
       <label for="date_order">Date (mm/dd/yyyy)</label>
       
-<input name="date_order" type="text" class="main_forms_field required" id="date_order" tabindex="3" value="<?php echo (isset($order->date_order))?(date('m/d/Y',strtotime($order->date_order))):('');?><?php echo (isset($form_data['od']))?(date('m/d/Y',strtotime($form_data['od']))):('')?>">
+<input name="date_order" <?php echo $readonly_field; ?> type="text" class="main_forms_field required" id="date_order" tabindex="3" value="<?php echo (isset($order->date_order))?(date('m/d/Y',strtotime($order->date_order))):('');?><?php echo (isset($form_data['od']))?(date('m/d/Y',strtotime($form_data['od']))):('')?>">
     </p>
     
     
@@ -341,11 +362,11 @@ function validate_order(){
       <label for="type_order"></label>
     </p></td>
     <td><p class="field_para">
-      <label for="no_of_trucks">No Of Men</label><input name="no_of_men" type="text" class="main_forms_field_date required" id="no_of_men" tabindex="4" value="<?php echo $order->no_of_men;?><?php echo (isset($form_data['m']) && $order->no_of_men == NULL)?($form_data['m']):('')?>" />
+            <label for="no_of_trucks">No Of Men</label><input name="no_of_men" <?php echo $readonly_field; ?> type="text" class="main_forms_field_date required" id="no_of_men" tabindex="4" value="<?php echo $order->no_of_men;?><?php echo (isset($form_data['m']) && $order->no_of_men == NULL)?($form_data['m']):('')?>" />
     </p></td>
     <td><p class="field_para">
       <label for="no_of_trucks">No Of Truck(s)</label>
-      <input name="no_of_trucks" type="text" class="main_forms_field_date required" id="no_of_trucks" tabindex="5" value="<?php echo $order->no_of_trucks;?><?php echo (isset($form_data['t']) && $order->no_of_trucks==NULL)?($form_data['t']):('')?>"  />
+      <input name="no_of_trucks" <?php echo $readonly_field; ?> type="text" class="main_forms_field_date required" id="no_of_trucks" tabindex="5" value="<?php echo $order->no_of_trucks;?><?php echo (isset($form_data['t']) && $order->no_of_trucks==NULL)?($form_data['t']):('')?>"  />
     </p></td>
     </tr>
   <tr>
@@ -360,7 +381,7 @@ function validate_order(){
   <tr>
     <td><p class="field_para">
       <label for="dl_no2">Truck Requirments</label>
-      <input name="truck_requirments" type="text" class="main_forms_field required" id="dl_no2" tabindex="6" value="<?php echo $order->truck_requirments;?><?php echo (isset($form_data['tr']) && $order->truck_requirments==NULL)?($form_data['tr']):('')?>" />
+      <input name="truck_requirments" <?php echo $readonly_field; ?> type="text" class="main_forms_field required" id="dl_no2" tabindex="6" value="<?php echo $order->truck_requirments;?><?php echo (isset($form_data['tr']) && $order->truck_requirments==NULL)?($form_data['tr']):('')?>" />
     </p></td>
     <td><p class="field_para">
       <label for="class2">Out of town</label>    
@@ -420,13 +441,152 @@ function validate_order(){
     <td colspan="3">      
         <p class="field_para" style="margin-top: 20px">
         <label for="cell">Attach crew instruction</label>
-        <input name="instruction_file" type="file" id="instruction_file" class="main_forms_field <?php echo (!isset($order->instruction_file))?(''):('');?>" tabindex="8" style="width: 300px" />
+        
+        <style type="text/css">
+            a#add_push{
+                text-decoration: none !important;
+                font-size: 12px;
+                font-weight: bold;
+            }
+            a#add_push:hover{
+                text-decoration: none !important;
+                font-size: 12px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+            a.cross:hover{
+                text-decoration: none !important;              
+                cursor: pointer;
+            }
+            #files_container
+            {
+              border: 0px solid red;
+              width: 300px;
+            }
+            #files_wrapper{
+                border: 0px solid black;
+                width: 225px;
+            }
+            #files_wrapper p{
+                padding-left: 0px !important;
+                padding-right: 0px !important;
+            }
+            .file_link_para a
+            {
+                color: #000;
+                font-family: arial;
+                font-size: 14px;
+            }
+            
+            #f_hdng label
+            {
+                font-family: arial;
+                font-size: 14px;
+                color: #B30000;
+            }
+        </style>
+        
+        <script type="text/javascript">
+            $('document').ready(function(){
+                
+                var oId = "<?php echo JRequest::getVar('id') ?>";                                    
+                    if(oId!='')
+                    {
+                        loadOrderFiles();
+                    }
+                
+                
+                $('#add_push').click(function(){
+                    //$('#file_para').clone().appendTo("div#files_container");                    
+                    var file_flds =  $('.instruction_class').get();                                        
+                    var rsl_no = file_flds.length+1;                    
+                    var a_string = "<a class='cross' id='cross_' onclick='delFunc(\"cross"+rsl_no+"\","+rsl_no+");' >x</a>";                    
+                    var fld_html = "<p id='file_para_"+rsl_no+"'><input name='instruction_file[]' type='file' id='instructionfile' class='main_forms_field instruction_class instructionfile' tabindex='8' style='width: 225px' />&nbsp "+a_string+" </p>";
+                    $("div#files_container").append(fld_html);
+                });
+
+                
+            });
+            
+            
+            function loadOrderFiles()
+            {
+                                
+                var oId = "<?php echo JRequest::getVar('id') ?>";
+                var url = "<?php echo JURI::current(); ?>/orders/?task=load_order_files";
+                var file_link = "";
+                $.post(url,{order_id:oId}, 
+                function(data) {
+                    $.each(data,function(i,obj){
+                        var file_url_link = "<?php echo JUri::base().'files/'?>"+obj.file_name;
+                        var x_string = "<a class='cross' id='"+obj.file_name+"' onclick='delFileFunc(\""+obj.id+"\",\""+obj.file_name+"\" , \""+obj.file_title+"\");' >x</a>";
+                        file_link += "<p class='file_link_para' id='para_"+obj.file_name+"'>"+x_string+"&nbsp<a target='_blank' href='"+file_url_link+"'>"+obj.file_title+"</a></p>";
+                    });
+                    var hdng = "<label for='cell' class='fhdng'>Attached files</label>";
+                    $('#f_hdng').html(hdng);                    
+                    $('#files_wrapper').html(file_link);                    
+                },"json");
+            }
+            
+            function delFunc(tag_id,id){
+                $('#file_para_'+id).remove();                
+            }
+            
+            function delFileFunc(id,file_name,file_title){
+                    if(confirm("Do you want to delete '"+file_title+"'?"))
+                    {
+                        var fId = id;
+                        var url = "<?php echo JURI::current(); ?>/orders/?task=del_order_files";
+                        $.post(url, {id:fId,fName:file_name}, function(data){
+                                if(data == '1')
+                                {
+                                    loadOrderFiles();
+                                }else{
+                                    alert("Problem with deleting file...");
+                                }
+                        });
+                    }
+            }
+            
+            
+            
+        </script>
+        
+        
+        
+        <table>
+            
+            <tr>
+                <td style="vertical-align: top;">
+                    <div id="files_container">
+                        <p>
+                <a id="add_push">+Add File</a>
+            </p>
+                        <p id="file_para">
+                            <input name="instruction_file[]" type="file" id="instructionfile" class="main_forms_field instruction_class instructionfile" tabindex="8" style="width: 225px" />
+                            
+                        </p>
+                    </div>                     
+                </td>
+                <td style="vertical-align: top;">
+                    <div id="f_hdng"></div>
+                    <div id="files_wrapper">
+                        
+                        
+                    </div>
+                </td>
+                <td style="vertical-align: top;">
+                    <p style="float: left"><input type="submit" value="Save" name="save" /></p>
+                </td>
+            </tr>    
+        </table>
+                  
         <input name="old_instruction_file" type="hidden" id="old_instruction_file" value="<?php echo $order->instruction_file;?>" />
         
         <?php if(isset($order->instruction_file) && $order->instruction_file!='')
                         
             {?>        
-            <p style="text-align: right;width: 210px"><a href="<?php echo JUri::base().'files/'.$order->instruction_file ?>">View file</a></p>
+        <p style="text-align: right;width: 210px"><a target="_blank" href="<?php echo JUri::base().'files/'.$order->instruction_file ?>">View file</a></p>
         <?php } ?>
       
       </p>      
@@ -440,7 +600,7 @@ function validate_order(){
   </table>        
         <br />        
         <div class="role_wrapper"> </div>
-<p style="float: left"><input type="submit" value="Save" name="save" /></p>
+
 
 
 </form>

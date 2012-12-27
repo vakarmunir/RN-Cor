@@ -169,6 +169,26 @@ class RednetModelOrders  extends JModelItem {
             return $db->insertid();
         }
         
+        public function insert_file($order_id,$file_name,$file_title)
+        {
+            $db = $this->_db;
+            $query = "INSERT INTO #__files_map (            
+            file_name,
+            file_title,
+            order_id            
+            )
+            VALUES(            
+            '$file_name',
+            '$file_title',            
+            '$order_id'
+            )
+            ";                        
+            
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());
+            return $db->insertid();
+        }
+        
         public function update_order()
         {
             $db = $this->_db;
@@ -216,6 +236,14 @@ class RednetModelOrders  extends JModelItem {
             $db->query() or die(mysql_error());            
         }
         
+        public function deleteOrderFiles($id)
+        {
+            $db = JFactory::getDbo();
+            $query = "DELETE FROM #__files_map WHERE id = $id";
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());            
+        }
+        
         public function getOrderById($id)
         {
             $db = $this->_db;
@@ -225,6 +253,15 @@ class RednetModelOrders  extends JModelItem {
             $db->setQuery($query);
             $db->query() or die(mysql_error());                        
             return $db->loadObject();
+        }
+		
+        public function getOrderFiles($order_id)
+        {
+            $db = $this->_db;            
+            $query = "SELECT * FROM #__files_map WHERE order_id=$order_id";            
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());                        
+            return $db->loadObjectList();
         }
 		
         public function is_order_exist($order_no)

@@ -1,7 +1,10 @@
 <?php
 // no direct access
 defined('_JEXEC') or die('Restricted access');
-
+                $order_no = JRequest::getVar('order_no');
+                $name = JRequest::getVar('name');
+                $date_order = JRequest::getVar('date_order');
+                
 ?>
 
 
@@ -19,15 +22,15 @@ var mydata = [
             $date_blank_a = false;
         }
                     
-                    if($order->is_addon != '1')
-                    {
+                    //if($order->is_addon != '1')
+                   // {
                         
         ?>
                     
                     {id:"<?php echo $order->id?>",order_no:"<?php echo str_replace('"','\"',$order->order_no)?>",name:"<?php echo str_replace('"','\"',$order->name)?>",order_date:"<?php echo date('m/d/Y',strtotime(str_replace('"','\"',$order->date_order)))?>",departure_time:"<?php echo date('h:i:s A',strtotime($order->departure_time))?>",edit:"Edit",deleteit:"Delete"},
 	<?php 
         
-                    }
+                    //}
          endforeach; 
         
                     
@@ -68,8 +71,9 @@ jQuery("#order_list").jqGrid({
         
             if(cellcontent == "Edit")
             {
+                
                 var server = "<?php echo JURI::base(); ?>";
-                var url = server+"index.php/component/rednet/orders?task=order_form&id="+rowid;
+                var url = server+"index.php/component/rednet/orders?task=order_form&id="+rowid;                
                 window.location = url;
             }
             if(cellcontent == "Delete")
@@ -112,6 +116,52 @@ jQuery("#order_list").jqGrid({
 <input class="button" type="submit" value="Create Order" name="order_button" id="order_button" />
 </p>-->
 <br />
+
+
+
+        <table width="80%" border="0" style="margin-left: 75px;margin-bottom: 10px;">
+            <form name="filter_order_list" id="filter_order_list" action="<?php echo JURI::current(); ?>" method="get">
+                 
+        <tr>
+            <td><p class="field_para">        
+
+                    <label for="order_no">Order#</label>
+                    <input type="hidden" name="action" value="filter" />
+                    <input name="order_no" type="text" class="main_forms_field required" id="order_no" tabindex="1" value="<?php echo (isset($order_no))?($order_no):('') ?>" />      <label for="fist_name"></label>
+            </p>
+            </td>
+
+
+            <td><p class="field_para">
+            <label for="name">Name</label>
+            <input name="name" type="text" class="main_forms_field required" id="name" tabindex="2" value="<?php echo (isset($name))?($name):('') ?>" /></p></td>
+            <td>
+
+            <p class="field_para">
+            <label for="date_order">Date (mm/dd/yyyy)</label>
+
+            <input name="date_order" type="text" class="main_forms_field required" id="date_order" tabindex="3" value="<?php echo (isset($date_order))?($date_order):('') ?>">
+
+            </p>        
+            </td>
+            
+            <td>
+                <p class="field_para">
+                    <label for="date_order">&nbsp;&nbsp;&nbsp;</label>
+
+            <input class="button" type="submit" value="Filter" name="order_button" id="filter" />
+
+            </p>        
+                
+            </td>
+            
+            </tr>
+            
+            </form>
+            
+        </table>      
+
+
 <p>
 <div style="margin-left: 100px;"> <table id="order_list"></table> <div id="porder_list"></div></div>
   

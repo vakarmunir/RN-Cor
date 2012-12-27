@@ -513,7 +513,7 @@ if($rslt!=NULL || $cell_field!=NULL || $home_field!=NULL)
             Please login with the provided temporary password, to setup your new
             password and verify personal information.<br /><br />
 
-            Username: $email <br />      
+            Email: $email <br />      
             Temporary Password:  $password <br />
             <a href='".JURI::base()."'>Click here to login</a><br /><br />
             If you have any problem, please contact 416 CALL RED<br /><br />

@@ -199,6 +199,15 @@ class RednetModelResourcesmap  extends JModelItem {
             return $db->loadObject();
         }
         
+        public function get_resourcemap_by_truck_and_OrderId($truck,$order_id)
+        {            
+            $db = $this->_db;            
+            $query = "SELECT * FROM #__resourcesmap WHERE truck=$truck and order_id=$order_id";                                    
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());                        
+            return $db->loadObject();
+        }
+        
         // Summary : this function is used to get resources map by worker_id and order_date by joining through order_id        
         public function get_resourcemap_by_UserId_OrderId_OrdderDate($user_id,$order_id,$order_date)
         {            

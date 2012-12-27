@@ -5,10 +5,9 @@ $app = JFactory::getApplication();
 
 $data = $this->data;
 $workers = $data['workers'];
-
 $worker_id_non_admin = $data['worker_id_non_admin'];
-
 $worker_id = JRequest::getVar('worker_id');
+
 
 $event_url = "";
 if(isset($worker_id) && $worker_id!=NULL)
@@ -21,12 +20,8 @@ if(isset($worker_id) && $worker_id!=NULL)
 
 if(isset($worker_id_non_admin) && $worker_id_non_admin!=NULL)
 {  
-
    $event_url = JURI::current()."?task=load_orders&worker_id=$worker_id_non_admin";   
 }
-
-
-
 
 ?>
 
@@ -55,6 +50,19 @@ if(isset($worker_id_non_admin) && $worker_id_non_admin!=NULL)
 				right: ''
 			},
 			selectable: true,
+                        loading: function(bool) {
+                                if (bool) 
+                                {
+                                    
+                                }else{
+                                    
+                                    draw_set_statup_buttons();
+                                }
+                        },
+                        
+                        complete: function() {
+              
+                        },
 			selectHelper: true,
 			dayClick: function(date, allDay, jsEvent,view) {			                                                                    
                                 var d = date.getDate();
@@ -87,12 +95,12 @@ if(isset($worker_id_non_admin) && $worker_id_non_admin!=NULL)
                         var event_addon_html = "";
                         $.each(addon_data,function(index,add_on_event){                           
                                 //event_addon_html = event_addon_html+"<p class='para_event'>"+add_on_event.title+"("+add_on_event.no_of_men+")"+"("+add_on_event.no_of_trucks+")</p>";    
-                                event_addon_html = event_addon_html+"<p class='para_event'>"+add_on_event.title+""+"</p>";    
+                                event_addon_html = event_addon_html+"<p class='para_event' style='padding-top:7px !important'>"+add_on_event.title+""+"</p>";    
                         });
                         
                         
                         // prepare orginal order here...                        
-                        var event_html = "<div class='event_wrapper'><p class='para_event'>"+event.title+"</p>"+ event_addon_html + "<p>("+event.no_of_men+")"+"("+event.no_of_trucks+")</p>"+ "<input type='image' src='"+icon_path+"' id='lock_icon' width='20' onclick='return go_allocated_resource("+event_id+" )' />" +"</div>";    
+                        var event_html = "<div class='event_wrapper'><p class='para_event'>"+event.title+"</p>"+ event_addon_html + "<p style='margin-top:5px!important;padding:0px !important;font-size:10px !important;'>("+event.no_of_men+")"+"("+event.no_of_trucks+")"+ "<span style='padding-left:5px'><input type='image' src='"+icon_path+"' id='lock_icon' width='15' height='12' onclick='return go_allocated_resource("+event_id+")' /></span></p>" +"</div>";    
                         $('div#event-'+event_id).html(event_html);
                         $(element).css('margin-bottom','5px');
                         //alert($('.fc-event').html());
@@ -178,33 +186,97 @@ if(isset($worker_id_non_admin) && $worker_id_non_admin!=NULL)
         
         
         $('.fc-button-prev').click(function(){
-            draw_set_statup_buttons();
+            //draw_set_statup_buttons();
         });
         
         $('.fc-button-next').click(function(){
-            draw_set_statup_buttons();
+            //draw_set_statup_buttons();
         });
         
-        draw_set_statup_buttons()
+        //draw_set_statup_buttons()
     });
     
     function draw_set_statup_buttons()
     {
-        var day_content = $('.fc-day-content').get();
-        
-        $(day_content).each(function(index,element){
-            //$(element).parent().css('background-color','yellow');
-            var date_box = $(element).parent().get();
+        var day_content = $('.fc-day-content').get();                        
+        $(day_content).each(function(index,element){        
+        var date_box = $(element).parent().get();
             
-        //$(".fc-day-number",date_box).css('border', '1px solid red');
             var day_of_date = $(".fc-day-number",date_box).text();
-            var day_table_html = "<table width='100%'><tr><td><span style='font-size:12px;font-family:arial;background-color:#B30000;padding:2px;color:#fff'>Set Status<span></td><td>"+day_of_date+"</td></tr></table>";            
-            $(".fc-day-number",date_box).css('width','90%').css('cursor', 'pointer').html(day_table_html);
+            var is_not_day_of_crnt_month = $(".fc-day-number",date_box).parents('td').hasClass('fc-other-month');
+            
+                    if(is_not_day_of_crnt_month == false)
+                    {
+                        var month_year_string = $.trim($('.fc-header-title h2').text()) ;                    
+                        var month_year_array = month_year_string.split(' '); 
+
+                        var month_string = month_year_array[0];
+                        var year_string = month_year_array[1];
+
+                        var months = {
+                                    January:1,
+                                    February:2,
+                                    March:3 ,
+                                    April:4 ,
+                                    May:5 ,
+                                    June:6 ,
+                                    July:7 ,
+                                    August:8,
+                                    September:9 ,
+                                    October:10 ,
+                                    November:11 ,
+                                    December:12 
+                                };
+
+
+                            var date_strng = year_string+"-"+months[month_string]+"-"+day_of_date;
+                            var status_text = "";                                                        
+               
+                            $.post("<?php  echo JURI::current(); ?>/?task=day_status_json", { date: date_strng},
+                                function(data) {
+                                    var data_string = data;                                    
+                                    var rslt_array = data_string.split(',');                                    
+                                    //$("div#test").append(rslt_array[0]+' * '+rslt_array[1]+" *** ");
+                                    
+                                    var data_date,data_status;
+                                    data_status = rslt_array[0].toUpperCase();
+                                    data_date = rslt_array[1];                                                                        
+                                    
+                                    $("span#"+data_date).text(data_status);
+                                        if(data_status == "OPEN")
+                                        {
+                                            $("span#"+data_date).css('background-color','#FFFFFF');
+                                        }                                    
+                                    
+                                        if(data_status == "HOLD")
+                                        {
+                                            $("span#"+data_date).css('background-color','#B30000');
+                                            $("span#"+data_date).css('color','#FFFFFF');
+                                        }                                    
+                                    
+                                        if(data_status == "CLOSED")
+                                        {
+                                            $("span#"+data_date).css('background-color','#B30000');
+                                            $("span#"+data_date).css('color','#FFFFFF');
+                                        }                                    
+                                    
+                                });
+                            
+                            
+                            
+                            var day_table_html = "<table width='100%'><tr><td><span id='"+date_strng+"' style='font-size:10px;font-family:arial;padding:2px;'>"+status_text+"<span></td><td>"+day_of_date+"</td></tr></table>";            
+                            $(".fc-day-number",date_box).css('width','90%').css('cursor', 'pointer').html(day_table_html);
+
+                    }
             
         });
     }
 </script>
 <?php endif; ?>
+
+<div id="test">
+    
+</div>
 
  <table border="0" style="margin-left: 35px;">
         <tr>
@@ -245,3 +317,5 @@ if(isset($worker_id_non_admin) && $worker_id_non_admin!=NULL)
 <div class="contentpane" id="calendar_pane">        
         <div id='calendar'></div>	
 </div>
+
+

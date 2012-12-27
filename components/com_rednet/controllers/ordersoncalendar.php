@@ -117,6 +117,47 @@ class RednetControllerOrdersoncalendar extends RednetController
         }
              
         
+        public function day_status_json()
+        {            
+                $data = array();
+                $date = JRequest::getVar('date');
+                $data['date'] = $date;
+                
+                $ordersoncalendar_model = $this->getModel('ordersoncalendar');
+                $day_status_obj = $ordersoncalendar_model->getDayByDate($date);
+                
+                $statuses = array();
+                $status_text = "";
+                
+                if($day_status_obj == NULL)
+                {
+                    $status_text = "OPEN";
+                }else{
+                    $status_text = $day_status_obj->status;
+                }
+
+                echo $status_text.','.$date;                
+                exit;
+        }
+             
+        public function assocArrayToXML($root_element_name,$ar)
+            {
+                $xml = new SimpleXMLElement("<?xml version=\"1.0\"?><{$root_element_name}></{$root_element_name}>");
+
+
+                $f = create_function('$f,$c,$a','
+                        foreach($a as $k=>$v) {
+                            if(is_array($v)) {
+                                $ch=$c->addChild($k);
+                                $f($f,$ch,$v);
+                            } else {
+                                $c->addChild($k,$v);
+                            }
+                        }');
+                $f($f,$xml,$ar);
+                return $xml->asXML();
+            } 
+        
         public function day_status_save()
         {
             // =========== setting days status to Closed,Hold ============                
@@ -154,6 +195,10 @@ class RednetControllerOrdersoncalendar extends RednetController
         {                
                 $model = $this->getModel('ordersoncalendar');                                                
                 $worker_id = JRequest::getVar('worker_id');
+                
+                $worker_model = $this->getModel('workers');                
+                $authentication_group = $worker_model->getWorkerAuthenticationGroup($this->_user->id);
+                                
                 
                 $all_orders = array();
                 
@@ -195,7 +240,19 @@ class RednetControllerOrdersoncalendar extends RednetController
                    //}
                    if(count($order_in_resource_map) == 0)
                    {
-                       $color_class = 'green_class';
+                       if($authentication_group == 'admin')
+                       {
+                            $color_class = 'green_class';
+                       }
+                   }
+                   
+                   
+                   if(count($order_in_resource_map) > 0)
+                   {
+                       if($authentication_group == 'admin')
+                       {
+                            $color_class = 'red_class';
+                       }
                    }
                    
                    
@@ -204,16 +261,47 @@ class RednetControllerOrdersoncalendar extends RednetController
                    {
                        if(($rsm->user_id != '0') && ( ( ($rsm->status == 'A') || ($rsm->status == 'D') ) && ($rsm->status != 'C') && ($rsm->status != 'CD')))
                        {
-                           $color_class = 'red_class';
+                           if($authentication_group == 'admin')
+                           {
+                               //$color_class = 'red_class';
+                           }
+                           
                        }
                    }
+                   
+                   $rs_total = count($order_in_resource_map);                   
+                   $rs_counter_blk = 1;
+                   $rs_counter_red = 1;
+                   $rs_counter_grn = 1;
                    
                    
                    foreach($order_in_resource_map as $rsm)
                    {
                        if(($rsm->user_id != '0') && ( ( ($rsm->status != 'A') && ($rsm->status != 'D') ) &&  (($rsm->status == 'C') || ($rsm->status == 'CD'))  ))
                        {
-                           $color_class = 'black_class';
+                            
+                           if($authentication_group == 'admin')
+                           {
+                               if(($rs_total > 0) && ($rs_counter_blk > 0) && ($rs_total==$rs_counter_blk))
+                               {
+                                   $color_class = 'black_class';                                   
+                               }                               
+                               $rs_counter_blk++;
+                               
+                           }
+                           
+                           if($authentication_group == 'loader' || $authentication_group == 'crew_office')
+                           {
+                               $model_resourcesmap = $this->getModel('resourcesmap');
+                               $rs_for_crnt_wrkr_of_crnt_ordr = $model_resourcesmap->get_resourcemap_by_UserId_and_OrderId($this->_user->id,$order_id);
+                                   
+                               if($rs_for_crnt_wrkr_of_crnt_ordr->status == 'C' || $rs_for_crnt_wrkr_of_crnt_ordr->status == 'CD')
+                               {                                                                      
+                                
+                                   $color_class = 'green_class';
+                               }
+                                    
+                           }                           
                        }
                    }
                    

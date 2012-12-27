@@ -52,12 +52,35 @@ class RednetModelOrderslist extends JModelList
 				$db		= $this->getDbo();
 				$query	= $db->getQuery(true);			
 		}
-	
+
+                
+                $order_no = JRequest::getVar('order_no');
+                $name = JRequest::getVar('name');
+                $date_order = JRequest::getVar('date_order');
+                
+                $order_by = 'ORDER BY id DESC';
+                                
+                $query_string = '#__orders as a';                                
 		$catid = (int) $this->getState('authorlist.id', 1);		
-		$query->select('a.*');
-		$query->from('#__orders as a ORDER BY id DESC');                                                          
-                
-                
+		$query->select('a.*');                
+		$query->from($query_string);                                                          
+               
+                if(isset($order_no) && $order_no!='')
+                {                   
+                    $query->where('order_no='."'$order_no'");                    
+                }
+
+                if(isset($name) && $name!='')
+                {                   
+                    $query->where('name LIKE '."'%$name%'");                    
+                }
+
+                if( (isset($date_order) && $date_order!='') && ( date('Y-m-d',  strtotime($date_order))!='1970-01-01') )
+                {  
+                    $q_date = date('Y-m-d',  strtotime($date_order));
+                    $query->where('date_order='."'$q_date'");                    
+                }
+                //echo $query->dump();                                
 		return $query;
 	}	
 }

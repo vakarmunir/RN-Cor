@@ -43,6 +43,7 @@ class RednetControllerOrders extends RednetController
                 
            // ==================== Updating the resources status =====================                                           
            $action = JRequest::getVar('action');           
+           $task = JRequest::getVar('task');           
            
            if(isset($action) && $action == 'update_resource_status')
            {
@@ -70,11 +71,85 @@ class RednetControllerOrders extends RednetController
                         
                         
                         // ===== [start] getting all available workers ================
-                            $all_available_workers = $model_orders->getAllAvailableWorkersByOrderId($id);
+                            $model = $this->getModel('workers');                                                                               
+                            //$all_available_workers = $model_orders->getAllAvailableWorkersByOrderId($id);                            
+                            $all_available_workers_rslt = $model_orders->getAllAvailableWorkersByOrderId($id);                            
+                            $all_available_workers = array();
+                            
+                            // ============= [start] filtering worker according to order type ==================
+                           /*
+                            if ($order->type_order == 'pack')
+                            {
+                                foreach($all_available_workers_rslt as $av_worker)
+                                {
+
+                                    $user_id = $av_worker->user_id;
+                                    $worker_roles = $model->getWorkerRolesIndexs($user_id);
+                                    
+                                    if($this->IsRoleNameExist($worker_roles,'packer'))
+                                    {
+                                        array_push($all_available_workers, $worker_roles);                                        
+                                    }                                    
+                                }                            
+                            }
+                            */
+                            if ($order->type_order == 'pack')
+                            {
+                                $array_source = $all_available_workers_rslt;
+                                
+                                foreach($all_available_workers_rslt as $i=>$av_worker)
+                                {
+
+                                    $user_id = $av_worker->user_id;
+                                    $worker_roles = $model->getWorkerRolesIndexs($user_id);
+                                    
+                                    if(($this->IsRoleNameExist($worker_roles,'ldr-f') == true && count($worker_roles) == 1)   ||  ($this->IsRoleNameExist($worker_roles,'ldr-p') == true && count($worker_roles) == 1))
+                                    {  
+                                        //echo "in if ==> i am packer and only 1 usr =".$av_worker->first_name;
+                                        unset($array_source[$i]);                                   
+                                    }else{
+                                        //echo "in else <br />";
+                                    }
+                                    
+                                    //echo "<br />**** loop cycle ****<br />";
+                                }
+                                
+                                $all_available_workers = $array_source;                                                                
+                                //var_dump($all_available_workers_rslt);
+                            }
+                            
+                            if ($order->type_order != 'pack')
+                            {
+                                $array_source = $all_available_workers_rslt;
+                                
+                                foreach($all_available_workers_rslt as $i=>$av_worker)
+                                {
+
+                                    $user_id = $av_worker->user_id;
+                                    $worker_roles = $model->getWorkerRolesIndexs($user_id);
+                                    
+                                    if($this->IsRoleNameExist($worker_roles,'packer') == true && count($worker_roles) == 1)
+                                    {  
+                                        //echo "in if ==> i am packer and only 1 usr =".$av_worker->first_name;
+                                        unset($array_source[$i]);                                   
+                                    }else{
+                                        //echo "in else <br />";
+                                    }
+                                    
+                                    //echo "<br />**** loop cycle ****<br />";
+                                }
+                                
+                                $all_available_workers = $array_source;                                                                
+                                //var_dump($all_available_workers_rslt);
+                            }
+                            // ============= [end] filtering worker according to order type ==================
                             $form_data['all_available_workers'] = $all_available_workers;
                         // ===== [end] getting all available workers ================
                         
                         // ===== [start] getting all assigned workers ================
+                            
+                            //var_dump($order);
+                            
                             $all_assigned_workers = $model_orders->getAllAssignedWorkerByOrderId($id);
                             $form_data['all_assigned_workers'] = $all_assigned_workers;
                         // ===== [end] getting all available workers ================
@@ -87,26 +162,29 @@ class RednetControllerOrders extends RednetController
                         
                         // ====== [start] checking status of date if OPEN,CLOSED,HOLD =========
                             //var_dump(strtotime($order->date_order));
-                            $ordersoncalendar_model = $this->getModel('ordersoncalendar');
-                            $day_status_obj = $ordersoncalendar_model->getDayByDate($order->date_order);
                             
-                            if(isset($day_status_obj) && $day_status_obj!=NULL)
+                            if($task == NULL)   
                             {
-                               $url = JURI::root().'index.php/component/rednet/ordersoncalendar/';
-                               if($day_status_obj->status == 'closed')
-                               {
-                                   $msg = "Status of order's day is closed";
-                                   $this->setRedirect($url,$msg);
-                                   $this->redirect();
-                               }
-                               
-                               if($day_status_obj->status == 'hold')
-                               {
-                                   $msg = "Status of order's day is hold";
-                                   $this->setRedirect($url,$msg);
-                                   $this->redirect();
-                               }
-                               
+                                        $ordersoncalendar_model = $this->getModel('ordersoncalendar');
+                                        $day_status_obj = $ordersoncalendar_model->getDayByDate($order->date_order);
+
+                                        if(isset($day_status_obj) && $day_status_obj!=NULL)
+                                        {
+                                            $url = JURI::root().'index.php/component/rednet/ordersoncalendar/';
+                                            if($day_status_obj->status == 'closed')
+                                            {
+                                                $msg = "Status of order's day is closed";
+                                                $this->setRedirect($url,$msg);
+                                                $this->redirect();
+                                            }
+
+                                            if($day_status_obj->status == 'hold')
+                                            {
+                                                $msg = "Status of order's day is hold";
+                                                $this->setRedirect($url,$msg);
+                                                $this->redirect();
+                                            }
+                                        }
                             }
                             
                         // ====== [end] checking status of date if OPEN,CLOSED,HOLD ==========                                                
@@ -268,6 +346,34 @@ class RednetControllerOrders extends RednetController
                     
                     //  1 - deleting resource                                                            
                     $this->del_resource($data['rs_id']);
+                    
+                    // [starts] ===== dealing with add-on orderder =========
+                    if($type=='worker')
+                    {
+                        $mdl_orders = $this->getModel('orders');
+                       $mdl_resourcesmap = $this->getModel('resourcesmap');
+                       $crnt_adon_orders = $mdl_orders->getAdOnOrderById($data['ord_id']);
+                       foreach($crnt_adon_orders as $adon_order)
+                       {
+                          $rsm_adon = $mdl_resourcesmap->get_resourcemap_by_UserId_and_OrderId($data['worker_id'],$adon_order->id);
+                          $this->del_resource($rsm_adon->id);
+                       }                       
+                    }
+                       
+                    if($type=='truck')
+                    {
+                       $mdl_orders = $this->getModel('orders');
+                       $mdl_resourcesmap = $this->getModel('resourcesmap');
+                       $crnt_adon_orders = $mdl_orders->getAdOnOrderById($data['ord_id']);
+                       foreach($crnt_adon_orders as $adon_order)
+                       {
+                          $rsm_adon = $mdl_resourcesmap->get_resourcemap_by_truck_and_OrderId($data['truck'],$adon_order->id);
+                          $this->del_resource($rsm_adon->id);
+                       }                       
+                    }
+                       
+                    // [end] ===== dealing with add-on orderder =========
+                    
                     
                     // 2 - restoring user calender availbity
                     if($type=='worker')
@@ -553,15 +659,11 @@ class RednetControllerOrders extends RednetController
         {
             $user = $this->_user;
             $order_model = $this->getModel('orders');
-            
-            
+                        
             $order_no_check = JRequest::getVar('order_no');                        
             $flag = $order_model->is_order_exist($order_no_check);            
             
-            $orderhelper = new JObject();
-            
-                        
-            
+            $orderhelper = new JObject();                                                            
             
             $id = JRequest::getVar('id');
             $action = JRequest::getVar('action');            
@@ -607,26 +709,9 @@ class RednetControllerOrders extends RednetController
 // ================= [end] checking existing Order# ================            
                 
                 
-                $instruction_file = $_FILES;                                                
+                //$instruction_file = $_FILES['instruction_file'];                                                
                 //start of file block
-                if($instruction_file['name'] != NULL)
-                {
-                    $cDateTime = date("mdYHis");                
-                    $arr = explode(".", $instruction_file['instruction_file']['name']);
-			$imgfile = $cDateTime.'.'.$arr[1];
-			$uploaddir = JPATH_SITE.DS.'files'.DS;
-			$upload = $uploaddir . $imgfile;
-                        
-                        
-                        if(@move_uploaded_file($instruction_file['instruction_file']['tmp_name'], $upload))
-			{
-                            $instruction_file_name = $imgfile;
-			}
-			else{
-                            echo 'Problem instuction file uploading file.';
-                            exit;
-			}
-                }
+                //exit;
                 // end of file block
                 
                 $order_no = JRequest::getVar('order_no');
@@ -685,8 +770,32 @@ class RednetControllerOrders extends RednetController
                 $order_model->_addon_time=$addon_time;
                 $order_model->_instruction_file=$instruction_file_name;
                 $order_model->_created_by=$created_by;
-                $order_model->_created_date=$created_date;
+                $order_model->_created_date=$created_date;                               
                 $o_n_id = $order_model->add_order();
+                
+                // [start] file uploading ========================
+               
+                if( strtolower( $_SERVER[ 'REQUEST_METHOD' ] ) == 'post' && !empty( $_FILES ) )
+                {
+                    $cntr = 0;
+                    foreach( $_FILES[ 'instruction_file' ][ 'tmp_name' ] as $index => $tmpName )
+                    {
+                        if( !empty( $_FILES[ 'instruction_file' ][ 'error' ][ $index ] ) )
+                        {
+                            
+                        }                        
+                        // check whether it's not empty, and whether it indeed is an uploaded file
+                        if( !empty( $tmpName ) && is_uploaded_file( $tmpName ) )
+                        {                                                     
+                            $this->uploadFile($tmpName,$_FILES[ 'instruction_file' ][ 'name' ][ $index ],$cntr,$o_n_id);                                                     
+                        }
+                        $cntr++;
+                    }
+                }
+
+                
+                // [end] file uploading ========================
+                
                 
                 if($is_addon == '0')
                 {
@@ -725,6 +834,7 @@ class RednetControllerOrders extends RednetController
                 $file_name_val = '';
                 $files_dir = JPATH_SITE.DS.'files'.DS; 
                 
+                /*
                 if($file_name!='')
                 {
                     
@@ -763,7 +873,7 @@ class RednetControllerOrders extends RednetController
                     $file_name_val = $old_file_name;
                 }
                 
-                
+                */
                 
                 
                 
@@ -819,6 +929,31 @@ class RednetControllerOrders extends RednetController
                     $order_model->update_add_on_order_any_field($adon_order->id,'departure_time',$departure_time);
                 }
                 
+                // [start] file uploading ========================
+               
+                if( strtolower( $_SERVER[ 'REQUEST_METHOD' ] ) == 'post' && !empty( $_FILES ) )
+                {
+                   
+                    $cntr = 0;
+                    foreach( $_FILES[ 'instruction_file' ][ 'tmp_name' ] as $index => $tmpName )
+                    {
+                        if( !empty( $_FILES[ 'instruction_file' ][ 'error' ][ $index ] ) )
+                        {
+                            
+                        }                        
+                        // check whether it's not empty, and whether it indeed is an uploaded file
+                        if( !empty( $tmpName ) && is_uploaded_file( $tmpName ) )
+                        {                            
+                            $this->uploadFile($tmpName,$_FILES[ 'instruction_file' ][ 'name' ][ $index ],$cntr,$order_id);                                                     
+                        }
+                        $cntr++;
+                    }
+                }
+
+                
+                // [end] file uploading ========================
+                
+                
                 $this->setMessage('Order updated.');
                 $this->setRedirect(JRoute::_('index.php/component/rednet/orderslist'));
                 $this->redirect();
@@ -832,6 +967,93 @@ class RednetControllerOrders extends RednetController
             JRequest::setVar('form_data',$form_data);
             parent::display();
         }
+        
+        private function IsRoleNameExist($array,$name)
+        {
+            $item = false;
+            foreach($array as $struct) {
+                if ($name == $struct->name) {
+                    $item = true;                    
+                }
+            }
+            
+            return $item;
+        }
 	
+        
+        private function uploadFile($tmpName,$fileName,$cntr,$order_id)
+        {
+                if($fileName != '')                                
+                {
+                
+                $order_model = $this->getModel('orders');
+                $instruction_file_name_unq = '';
+                $instruction_file_name_orgnl = '';
+                            
+                    $cDateTimeX = date("Y-m-d\TH:i:s");                                    
+                    $cDateTime = strtotime($cDateTimeX);                
+                    $arr = explode(".", $fileName);
+			$imgfile = $cDateTime.$cntr.$this->randomstring().'.'.$arr[1];
+			$uploaddir = JPATH_SITE.DS.'files'.DS;
+			$upload = $uploaddir . $imgfile;
+                                        
+                        if(@move_uploaded_file($tmpName, $upload))
+			{
+                            $instruction_file_name_unq = $imgfile;
+                            $instruction_file_name_orgnl = $arr[0];
+                            
+                            //echo "** Orginal Name: ".$instruction_file_name_orgnl."<br />";
+                            //echo "** Unique Name: ".$instruction_file_name_unq;
+                    
+                            $order_model->insert_file($order_id,$instruction_file_name_unq,$instruction_file_name_orgnl);
+                            
+                            //echo "<br />";
+                            //echo "<br />";
+			}
+			else{
+                            echo 'Problem instuction file uploading file.';
+                            exit;
+			}
+                }else{
+                   // echo 'in else...';
+                }
+                
+        }
+        
+        private function randomstring() {
+            $alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
+            $pass = array(); //remember to declare $pass as an array
+            for ($i = 0; $i < 8; $i++) {
+                $n = rand(0, strlen($alphabet)-1); //use strlen instead of count
+                $pass[$i] = $alphabet[$n];
+            }                                   
+            return strtolower(substr(implode($pass),0,4)); //turn the array into a string
+        }
+        
+        public function load_order_files()
+        {
+            $order_id = JRequest::getVar('order_id');
+            $model_order = $this->getModel('orders');
+            $files = $model_order->getOrderFiles($order_id);
+            echo json_encode($files);
+            exit();
+        }
+        public function del_order_files()
+        {
+            $id = JRequest::getVar('id');
+            $fName = JRequest::getVar('fName');
+            $files_dir = JPATH_SITE.DS.'files'.DS; 
+            
+            $model_order = $this->getModel('orders');
+                                    
+            if(unlink($files_dir.$fName))
+            {
+                $model_order->deleteOrderFiles($id);                
+            }else{
+                echo "error during deletion..";
+            }
+            echo '1';
+            exit();
+        }
 }// class
 ?>

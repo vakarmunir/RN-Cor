@@ -73,6 +73,10 @@ $authentication_group = $form_data['authentication_group'];
 
 
 $all_available_workers = count($form_data['all_available_workers']);
+
+//echo "Debuggin... <br />";
+//var_dump($form_data['all_available_workers']);
+
 $all_available_trucks = count($fleets_not_assigned) + count($rentals_not_assigned);
 
 $all_assigned_workers = count($form_data['all_assigned_workers']);
@@ -535,7 +539,10 @@ function resource_validate()
             }
         </style>
         
-        <label for="order_no">Ad-On Order#</label> <span class="edit_sapn"><a href="<?php echo JURI::current()."?id=$ordr->id" ?>" style="font-size: 14px;">Edit</a></span>
+        <label for="order_no">Ad-On Order#</label> 
+        <?php if($authentication_group == 'admin') { ?>     
+        <span class="edit_sapn"><a href="<?php echo JURI::current()."?id=$ordr->id" ?>" style="font-size: 14px;">Edit</a></span>
+        <? } ?>
       <input name="adorder_no" type="text" disabled="disables" class="main_forms_field" id="adorder_no" tabindex="" value="<?php echo $ordr->order_no;?>" />      <label for="adfist_name"></label>
     </p>
     </td>
@@ -610,17 +617,93 @@ function resource_validate()
   
   <tr>
       <td colspan="1">
-          
-          
-          <?php if(isset($order->instruction_file) && $order->instruction_file!='')
+
+          <style type="text/css">
+            a#add_push{
+                text-decoration: none !important;
+                font-size: 12px;
+                font-weight: bold;
+            }
+            a#add_push:hover{
+                text-decoration: none !important;
+                font-size: 12px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+            a.cross:hover{
+                text-decoration: none !important;              
+                cursor: pointer;
+            }
+            #files_container
+            {
+              border: 0px solid red;
+              width: 300px;
+            }
+            #files_wrapper{
+                border: 0px solid black;
+                width: 225px;
+                margin-left: 15px;
+            }
+            #files_wrapper p{
+                padding-left: 0px !important;
+                padding-right: 0px !important;
+            }
+            .file_link_para a
+            {
+                color: #000;
+                font-family: arial;
+                font-size: 14px;
+            }
+            
+            #f_hdng label
+            {
+                font-family: arial;
+                font-size: 14px;
+                color: #B30000;
+                margin-left: 15px;
+            }
+        </style>
+        
+        <script type="text/javascript">
+            
+            $('document').ready(function(){
+                loadOrderFiles();
+            });
+            function loadOrderFiles()
+            {
+                                
+                var oId = "<?php echo JRequest::getVar('id') ?>";
+                var url = "<?php echo JURI::current(); ?>/orders/?task=load_order_files";
+                var file_link = "";
+                $.post(url,{order_id:oId}, 
+                function(data) {
+                    $.each(data,function(i,obj){
+                        var file_url_link = "<?php echo JUri::base().'files/'?>"+obj.file_name;
+                        var x_string = "";
+                        file_link += "<p class='file_link_para' id='para_"+obj.file_name+"'>"+x_string+"<a target='_blank' href='"+file_url_link+"'>"+obj.file_title+"</a></p>";
+                    });
+                    
+                    var hdng = "<label for='cell' class='fhdng'>Attached files("+data.length+")</label>";
+                    $('#f_hdng').html(hdng);                    
+                    $('#files_wrapper').html(file_link);                    
+                },"json");
+            }
+         
+        </script>
+        <br />
+          <div id="f_hdng"></div>
+                    <div id="files_wrapper">
                         
-            {?>
+                        
+                    </div>
+          <?php //if(isset($order->instruction_file) && $order->instruction_file!='')
+                        
+            //{?>
           
-            <div class="view_file_button">
-                  <p><a href="<?php echo JUri::base().'files/'.$order->instruction_file ?>">Download Instruction file</a></p>
-            </div>
-        <?php }
-        ?>
+<!--            <div class="view_file_button">
+                  <p><a target="_blank" href="<?php //echo JUri::base().'files/'.$order->instruction_file ?>">Download Instruction file</a></p>
+            </div>-->
+        <?php //} ?>
       
       </td>
       
@@ -675,12 +758,15 @@ function resource_validate()
 
 
 
-
-
-
-
 <div style="width:750px;margin-left: 90px;">
+    
 	<h3>Assigned Resources</h3><br />
+<table>
+    <tr>
+        <td>
+        
+            
+            
 	<div class="right">
             
             <script type="text/javascript">
@@ -942,7 +1028,13 @@ function resource_validate()
 	</div>
     
     
+            
+        </td>
+    </tr>
     
+    <tr>
+        <td>
+        
 <?php
 
 function make_worker_list($workers,$role_type,$av_loader_names = null)
@@ -1117,6 +1209,8 @@ function make_truck_list_assigned($trucks,$truck_type)
   
         
 <?php if($authentication_group == 'admin') { ?>
+
+    
 <div id="resource_stack_container">    
     
     <h3 style="margin-bottom: 10px">Available Resources</h3>
@@ -1222,6 +1316,13 @@ function make_truck_list_assigned($trucks,$truck_type)
 </div>
         
         <?php } //authentication group check.?>
+            
+        </td>
+    </tr>
+</table>
+
+
+
 </div>
 
 
@@ -1245,15 +1346,35 @@ if($rs_id == NULL)
  ?>
 
 
+<script type="text/javascript">
+    function validate_update_status()
+    {
+        
+        var role = "<?php echo $rsId_for_crnt_wrkr_of_crnt_ordr->worker_role; ?>";
+        //alert(role);
+        //alert($('input[name=confirm_order]:checked').val());
+        var return_flag = true;                     
+            if( ($('input[name=confirm_order]:checked').val() == 'CD') && (role == 'Driver' || role=='Crew Chief')  )
+            {
+                var cnf = confirm('Your role involves driving an FMI truck, are you sure you are able to direct drive for this job?');
+                if(cnf == false)
+                {
+                    return_flag = false;
+                }
+            }
+            return return_flag;
+    }
+</script>
+
      <div style="margin-left: 70px;">
     
-    <form id="form1" name="form1" method="post" action="<?php echo JURI::current(); ?>">
+    <form id="form1" name="form1" method="post" action="<?php echo JURI::current(); ?>" onSubmit="return validate_update_status();">
     <input type="hidden" name="action" value="update_resource_status" />
     <input type="hidden" name="rs_id" value="<?php echo $rs_id; ?>" />
     <input type="hidden" name="action" value="update_resource_status" />
   <p>
     <label>
-        <input type="radio" name="confirm_order" value="C" id="confirm_order_0" <?php echo(  (isset( $rsId_for_crnt_wrkr_of_crnt_ordr) && $rsId_for_crnt_wrkr_of_crnt_ordr->status == 'C')   ||    $rsId_for_crnt_wrkr_of_crnt_ordr->status == 'D' )?('checked=checked'):('') ?> />
+        <input type="radio" name="confirm_order" value="C" id="confirm_order_0" <?php echo(  (isset( $rsId_for_crnt_wrkr_of_crnt_ordr) && $rsId_for_crnt_wrkr_of_crnt_ordr->status == 'C')   ||    $rsId_for_crnt_wrkr_of_crnt_ordr->status == 'D' || $rsId_for_crnt_wrkr_of_crnt_ordr->status == 'A' )?('checked=checked'):('') ?> />
       Confirmed</label>
     <br />
     <label>

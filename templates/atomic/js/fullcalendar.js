@@ -243,11 +243,18 @@ function Calendar(element, options, eventSources) {
 	function render(inc) {
 		if (!content) {
 			initialRender();
+                        
+                        // by waqar
+                        trigger('complete', null, true);
+                        
 		}else{
 			calcSize();
 			markSizesDirty();
 			markEventsDirty();
 			renderView(inc);
+                        
+                        //by waqar
+                        trigger('complete', null, true);
 		}
 	}
 	
