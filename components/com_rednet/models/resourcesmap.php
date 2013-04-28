@@ -149,19 +149,24 @@ class RednetModelResourcesmap  extends JModelItem {
             $query = "SELECT * FROM #__resourcesmap WHERE order_id = $order_id";                                   
             $db->setQuery($query);
             $db->query() or die(mysql_error());
-            $rs = $db->loadObjectList();
-            
+            $rs = $db->loadObjectList();                                    
             return $rs;
         }
         
-        
-        public function update_resource_status($rs_id,$update_value)
+        public function delete_resourcesmap($id)
         {
-            $db = $this->_db;
-            
+            $db = JFactory::getDbo();
+            $query = "DELETE FROM #__resourcesmap WHERE id = $id";
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());            
+        }
+        public function update_resource_status($rs_id,$update_value,$comments)
+        {
+            $db = $this->_db;            
             $query = "UPDATE #__resourcesmap 
             SET
-            status = '$update_value'
+            status = '$update_value',
+            comments = '$comments'
             WHERE id = $rs_id";                        
             $db->setQuery($query);
             $db->query() or die(mysql_error());            
@@ -237,6 +242,66 @@ class RednetModelResourcesmap  extends JModelItem {
             $db->setQuery($query);
             $db->query() or die(mysql_error());                        
             return $db->loadObject();
+        }
+        
+        public function get_resourcemap_OrdderDate($order_date)
+        {            
+            $db = $this->_db;            
+            $query = "
+            Select
+                #__resourcesmap.id,
+                #__resourcesmap.order_id,
+                #__resourcesmap.user_id,
+                #__resourcesmap.truck,
+                #__resourcesmap.truck_type,
+                #__resourcesmap.status,
+                #__orders.id As order_id1,
+                #__orders.order_no,
+                #__orders.name,
+                #__orders.date_order,
+                #__orders.type_order,
+                #__orders.type_if_other
+             From
+                #__resourcesmap Left Join
+                #__orders On #__resourcesmap.order_id = #__orders.id
+             Where
+                #__orders.id = #__resourcesmap.order_id And
+                (#__orders.date_order = '$order_date')
+            ";                                    
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());                        
+            return $db->loadObjectList();
+        }
+        
+        
+        public function get_resourcemap_by_trucktype_and_OrdderDate($truck_type,$order_date)
+        {            
+            $db = $this->_db;            
+            $query = "
+            Select
+                #__resourcesmap.id,
+                #__resourcesmap.order_id,
+                #__resourcesmap.user_id,
+                #__resourcesmap.truck,
+                #__resourcesmap.truck_type,
+                #__resourcesmap.status,
+                #__orders.id As order_id1,
+                #__orders.order_no,
+                #__orders.name,
+                #__orders.date_order,
+                #__orders.type_order,
+                #__orders.type_if_other
+             From
+                #__resourcesmap Left Join
+                #__orders On #__resourcesmap.order_id = #__orders.id
+             Where
+                #__orders.id = #__resourcesmap.order_id And
+                (#__resourcesmap.truck_type = '$truck_type' And
+                #__orders.date_order = '$order_date')
+            ";                                    
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());                        
+            return $db->loadObjectList();
         }
         
         

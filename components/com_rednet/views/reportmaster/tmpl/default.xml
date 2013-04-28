@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="Reportmaster">
+		<help
+			key = "Reportmaster_DESC"
+		/>
+		<message>
+			<![CDATA[Reportmaster_DESC]]>
+		</message>
+	</layout>
+	<state>
+	<name>Reportmaster Layout</name>
+		<description>Reportmaster Layout_DESC</description>	
+		<url addpath="/administrator/components/com_rednet/elements">
+			<param name="id" type="reportmaster" default="0" label="Select Reportmaster" description="A Reportmaster" />
+		</url>
+		<params>
+		</params>
+	</state>
+	
+	<!-- Fields for Joomla > 1.5. -->
+	<fields name="request">
+		<fieldset name="request"
+			addfieldpath="/administrator/components/com_rednet/models/fields"
+		>
+			<field name="id"
+				type="rednetreportmaster"
+				description="Reportmaster_SELECT_DESC"
+				label="Select Reportmaster"
+				required="true"
+			/>
+		</fieldset>
+	</fields>	
+	<!-- Add fields to the parameters object for the layout. -->
+	<fields name="params">
+	</fields>
+</metadata>

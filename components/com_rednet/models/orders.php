@@ -43,6 +43,7 @@ class RednetModelOrders  extends JModelItem {
         public $_created_by;
         public $_created_date;
         public $_parent_order;
+        public $_comments;
         
         /**
 	 * Method to auto-populate the model state.
@@ -140,7 +141,8 @@ class RednetModelOrders  extends JModelItem {
             instruction_file,
             created_by,
             created_date,
-            parent_order
+            parent_order,
+            comments
             )
             VALUES(
             
@@ -160,7 +162,8 @@ class RednetModelOrders  extends JModelItem {
             '$this->_instruction_file',
             '$this->_created_by',
             '$this->_created_date',
-            '$this->_parent_order'
+            '$this->_parent_order',
+            '$this->_comments'
             )
             ";                        
             
@@ -208,7 +211,9 @@ class RednetModelOrders  extends JModelItem {
                 is_addon='$this->_is_addon',
                 addon_time='$this->_addon_time',
                 instruction_file='$this->_instruction_file',            
+                comments='$this->_comments',            
                 updated_date='$update_date'            
+
                    WHERE id=$this->_order_id;
             ";                        
             
@@ -223,6 +228,16 @@ class RednetModelOrders  extends JModelItem {
            $update_date = date('Y-m-d');
             $query = "UPDATE #__orders SET $col='$val' WHERE id=$id";                        
             
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());
+            
+        }
+        
+        public function update_parent_order_any_field($id,$col,$val)
+        {
+            $db = $this->_db;
+            $update_date = date('Y-m-d');
+            $query = "UPDATE #__orders SET $col='$val' WHERE id=$id";                                    
             $db->setQuery($query);
             $db->query() or die(mysql_error());
             
@@ -255,6 +270,40 @@ class RednetModelOrders  extends JModelItem {
             return $db->loadObject();
         }
 		
+        public function getOrderByType($type,$date_order)
+        {
+            $db = $this->_db;
+            if($type == 'fmi_move' || $type=='move_fmi' || $type=='move')
+            {
+                $query = "SELECT * FROM #__orders WHERE type_order IN ('fmi_move','move_fmi','move') and date_order='$date_order'";
+            }else{
+                $query = "SELECT * FROM #__orders WHERE type_order='$type' and date_order='$date_order'";
+            }
+                        
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());                        
+            
+            return $db->loadObjectList();
+        }
+		
+        public function getOrderByDate($date_order)
+        {
+            $db = $this->_db;            
+            $query = "SELECT * FROM #__orders WHERE date_order='$date_order' and is_addon=0";            
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());                                    
+            return $db->loadObjectList();
+        }
+		
+        public function getOrderByNo($order_no)
+        {
+            $db = $this->_db;            
+            $query = "SELECT * FROM #__orders WHERE order_no='$order_no'";            
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());                                    
+            return $db->loadObject();
+        }
+		
         public function getOrderFiles($order_id)
         {
             $db = $this->_db;            
@@ -280,12 +329,44 @@ class RednetModelOrders  extends JModelItem {
             
             return $flag;            
         }
-		
+        public function is_order_exist_at_date($order_no,$date_order)
+        {
+            $db = $this->_db;
+            $flag = FALSE;
+            $query = "SELECT * FROM #__orders WHERE order_no='$order_no' and date_order='$date_order'";
+            
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());                        
+            $rcd = $db->loadObject();
+            if($rcd != NULL)
+            {
+                $flag = TRUE;
+            }
+            
+            return $flag;            
+        }
+	
+        public function getAllOrdersByField($fld,$val)
+        {
+            $db = $this->_db;
+            $query = "SELECT * FROM #__orders where $fld LIKE '%$val%' AND is_addon=0 AND parent_order=0";            
+            $db->setQuery($query);
+            $db->query() or die(mysql_error);
+            return $db->loadObjectList();
+        }
+        public function  getAllOrders()
+        {
+            $db = $this->_db;
+            $query = "SELECT * FROM #__orders";
+            $db->setQuery($query);
+            $db->query() or die(mysql_error);
+            return $db->loadObjectList();
+        }
         public function getAdOnOrderById($id)
         {
             $db = $this->_db;
             
-            $query = "SELECT * FROM #__orders WHERE parent_order=$id";
+            $query = "SELECT * FROM #__orders WHERE parent_order=$id ORDER BY id ASC";
             
             $db->setQuery($query);
             $db->query() or die(mysql_error());                        

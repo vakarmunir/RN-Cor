@@ -64,4 +64,5 @@ class JConfig {
 	public $cookie_domain = '';
 	public $cookie_path = '';
         public $host_path = 'http://168.144.97.198/rednet/';
+        public $invoice_address = 'waqarmuneer@gmail.com';
 }

@@ -49,6 +49,24 @@ class RednetControllerFleet extends RednetController
             JRequest::setVar("fleet",$fleet);
             parent::display();
         }
+	public function get_fleet_by_id()
+        {
+            $model = $this->getModel('fleet');
+            $id = JRequest::getVar('id');
+            
+            $fleet = $model->getFleetById($id);                       
+            echo json_encode($fleet);
+            exit;
+        }
+	public function get_rental_by_id()
+        {
+            $model = $this->getModel('fleet');
+            $id = JRequest::getVar('id');
+            
+            $rental = $model->getRentalById($id);                       
+            echo json_encode($rental);
+            exit;
+        }
 	public function edit_rental()
         {
             $model = $this->getModel('fleet');

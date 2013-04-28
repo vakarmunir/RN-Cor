@@ -121,7 +121,7 @@ class RednetModelAvailabilitycalendar  extends JModelItem {
          
             
                 $db->setQuery($query);
-                $db->query() or die(mysql_error());
+                $db->query() or die("add_availabilitycalendar : ".mysql_error());
                 return $db->insertid();
             
             
@@ -135,7 +135,7 @@ class RednetModelAvailabilitycalendar  extends JModelItem {
             $query = "INSERT INTO #__user_availabilitycalendar (user_id,availability_date) VALUES ($user_id,'$av_date')";                       
                                  
                 $db->setQuery($query);
-                $db->query() or die(mysql_error());
+                $db->query() or die("add_availabilitycalendar_complete : ".mysql_error());
                 return $db->insertid();                        
         }
         
@@ -149,7 +149,7 @@ class RednetModelAvailabilitycalendar  extends JModelItem {
             
             
             $db->setQuery($query);
-            $db->query() or die(mysql_error());
+            $db->query() or die("add_availabilitycalendar_complete : ".mysql_error());
             //return $db->insertid();
         }
         
@@ -159,11 +159,11 @@ class RednetModelAvailabilitycalendar  extends JModelItem {
             $curr_date = date('Y-m-d');            
             $query = "INSERT INTO #__user_availability_of_days (user_id,day,month,created_date) VALUES ($user_id,'$day',$month,'$curr_date')";
             
-            echo $query."<br />";
+            //echo $query."<br />";
             //exit;
             
             $db->setQuery($query);
-            $db->query() or die(mysql_error());
+            $db->query() or die("add_user_availabilit_of_day : ".mysql_error());
             return $db->insertid();
         }
         public function delete_user_availabilit_of_day($user_id,$day,$month)
@@ -207,7 +207,7 @@ class RednetModelAvailabilitycalendar  extends JModelItem {
             $db = $this->_db;       
             $query = "DELETE FROM #__user_availabilitycalendar WHERE id=$id";                                   
             $db->setQuery($query);
-            $db->query() or die(mysql_error());
+            $db->query() or die("delete_availabilitycalendar ".mysql_error());
             
         }
 		
@@ -216,7 +216,7 @@ class RednetModelAvailabilitycalendar  extends JModelItem {
             $db = $this->_db;       
             $query = "DELETE FROM #__user_availabilitycalendar WHERE user_id=$user_id AND availability_date='$availability_date'";
             $db->setQuery($query);
-            $db->query() or die(mysql_error());
+            $db->query() or die("delete_availabilitycalendar_by_date ".mysql_error());
             
         }
 		

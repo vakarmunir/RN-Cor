@@ -138,7 +138,7 @@ class RednetModelWorkers  extends JModelItem {
                $query.= " email='$email'";
            }
            
-           
+           $query.= " ORDER BY first_name ASC";
            
             $db->setQuery($query) or die(mysql_error());
             $db->query();
@@ -148,6 +148,11 @@ class RednetModelWorkers  extends JModelItem {
         
         
         
+        public function getAllPackers()
+        {            
+            $packers = $this->getWorkersByRoleName('packer');            
+            return $packers;
+        }
         public function getAllLoaders()
         {            
             $ldr_p = $this->getWorkersByRoleName('ldr-p');
@@ -155,6 +160,26 @@ class RednetModelWorkers  extends JModelItem {
             
             $loaders = array_merge($ldr_p,$ldr_f);
             return $loaders;
+        }
+        public function getAllDrivers()
+        {            
+            $drv_z = $this->getWorkersByRoleName('drv-z');
+            $drv_g = $this->getWorkersByRoleName('drv-g');
+            
+            $drivers = array_merge($drv_z,$drv_g);
+            return $drivers;
+        }
+        
+        public function getAllCrews()
+        {            
+            $cc = $this->getWorkersByRoleName('cc');
+            $cct = $this->getWorkersByRoleName('cct');
+            $acc = $this->getWorkersByRoleName('acc');
+            $accg = $this->getWorkersByRoleName('acc-g');
+            
+            $crews = array_merge($cc,$cct,$acc,$accg);
+            
+            return $crews;
         }
         
         public function getWorkersByRoleName($role_name)
@@ -314,7 +339,6 @@ Where
             //$query = "DELETE FROM #__users WHERE id IN($user_id)";            
             
             $query = "
-
  Select
   #__users.id,
   #__users.name,
@@ -357,6 +381,7 @@ Where
   #__workers.user_id = #__users.id And
   #__fua_userindex.user_id = #__users.id
 
+ORDER BY #__workers.first_name ASC
             ";
             $db->setQuery($query) or die(mysql_error());
             $db->query();
@@ -417,6 +442,7 @@ Where
   #__workers.user_id = #__users.id And #__workers.status = 1 AND
   #__fua_userindex.user_id = #__users.id
 
+ORDER BY #__workers.first_name ASC
             ";
             $db->setQuery($query) or die(mysql_error());
             $db->query();

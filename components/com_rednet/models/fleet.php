@@ -116,6 +116,22 @@ class RednetModelFleet  extends JModelItem {
             return $fleets;
         }
         
+        public function getFleetsInService()
+        {
+            
+          
+            $db = JFactory::getDbo();
+          
+            //echo $from;
+            
+            $query = "SELECT * FROM #__vehicles_fleet where out_of_service=0";   
+            
+            $db->setQuery($query);
+            $db->query() or die(mysql_error());
+            $fleets = $db->loadObjectList();
+            return $fleets;
+        }
+        
       
         public function getFleetsNotAssigned()
         {                      

@@ -20,14 +20,10 @@ var mydata = [
             $date_blank_a = true;
         }else{
             $date_blank_a = false;
-        }
-                    
-                    //if($order->is_addon != '1')
-                   // {
-                        
+        }                                        
         ?>
                     
-                    {id:"<?php echo $order->id?>",order_no:"<?php echo str_replace('"','\"',$order->order_no)?>",name:"<?php echo str_replace('"','\"',$order->name)?>",order_date:"<?php echo date('m/d/Y',strtotime(str_replace('"','\"',$order->date_order)))?>",departure_time:"<?php echo date('h:i:s A',strtotime($order->departure_time))?>",edit:"Edit",deleteit:"Delete"},
+                    {id:"<?php echo $order->id?>",order_no:"<?php echo str_replace('"','\"',$order->order_no)?>",name:"<?php echo str_replace('"','\"',$order->name)?>",order_date:"<?php echo date('m/d/Y',strtotime(str_replace('"','\"',$order->date_order)))?>",departure_time:"<?php echo date('h:i:s A',strtotime($order->departure_time))?>",edit:"Edit",deleteit:"Delete",trip_report:"Trip Report"},
 	<?php 
         
                     //}
@@ -46,15 +42,18 @@ jQuery("#order_list").jqGrid({
         
 	rowNum: 10,
 	rowList: [10,10,10],
-   	colNames:['Id','Order#','Name','Order Date','Departure Time','Edit','Delet'],
+   	colNames:['Id','Order#','Name','Order Date','Departure Time','Edit','Delet','Trip Report'],
    	colModel:[
    		{name:'id',index:'id', width:60, sorttype:"int" , hidden:true},
    		{name:'order_no',index:'name', width:90, align:"center"},
    		{name:'name',index:'name', width:90, align:"center"},
-   		{name:'order_date',index:'order_date', width:90, align:"center"},
+   		{name:'order_date',index:'order_date', width:90, align:"center",
+                  sorttype:'date' ,formatter:'date', formatoptions: {srcformat: 'm/d/Y', newformat: 'm/d/Y'}
+                },
    		{name:'departure_time',index:'departure_time', width:130, align:"center"},   		
    		{name:'edit',index:'edit', width:50, align:"center"},
-   		{name:'deleteit',index:'deleteit', width:40, align:"center"}	
+   		{name:'deleteit',index:'deleteit', width:40, align:"center"},	
+   		{name:'trip_report',index:'trip_report', width:50, align:"center"}	
    			
    	],
    	pager: "#porder_list",
@@ -74,6 +73,13 @@ jQuery("#order_list").jqGrid({
                 
                 var server = "<?php echo JURI::base(); ?>";
                 var url = server+"index.php/component/rednet/orders?task=order_form&id="+rowid;                
+                window.location = url;
+            }
+            if(cellcontent == "Trip Report")
+            {
+                
+                var server = "<?php echo JURI::base(); ?>";
+                var url = server+"index.php/component/rednet/reportmaster/?order_id="+rowid;                
                 window.location = url;
             }
             if(cellcontent == "Delete")
@@ -107,6 +113,12 @@ jQuery("#order_list").jqGrid({
             var path =server+"<?php echo "index.php/component/rednet/orders?task=order_form";?>";            
             window.location = path;
         });
+        
+        
+        $('th#jqgh_order_list_order_date').click(function(){
+            //alert('i m clicked');
+        });
+        
     });
 </script>
 

@@ -258,10 +258,11 @@ $model = $this->getModel("workers");
 $rslt = $model->fieldValueCheck("email",$email);
 $cell_field = $model->fieldValueCheckWorker("cell",$cell);
 $home_field = $model->fieldValueCheckWorker("home",$home);
+$sn_field = $model->fieldValueCheckWorker("s_n",$s_n);
 
 $msg_field = '';
 
-if($rslt!=NULL || $cell_field!=NULL || $home_field!=NULL)
+if($rslt!=NULL || ($cell_field!=NULL && strlen($cell) > 0) || ($home_field!=NULL && strlen($home) > 0) || ($sn_field!=NULL && strlen($s_n) > 0))
 {    
             $inner_display_check = true;            
             $layout = "default_add_worker";
@@ -271,14 +272,19 @@ if($rslt!=NULL || $cell_field!=NULL || $home_field!=NULL)
                 $msg_field = $msg_field." Email: $email";                
             }
             
-            if($cell_field!=NULL)
+            if($cell_field!=NULL && strlen($cell) > 0)
             {
                 $msg_field = $msg_field." Cell: $cell";
             }
             
-            if($home_field!=NULL)
+            if($home_field!=NULL && strlen($home) > 0)
             {
                 $msg_field = $msg_field." Home: $home";
+            }
+            
+            if($sn_field!=NULL && strlen($s_n) > 0)
+            {
+                $msg_field = $msg_field." S/N: $s_n";
             }
             
             $msg = "Worker already exist with $msg_field";
@@ -506,8 +512,8 @@ if($rslt!=NULL || $cell_field!=NULL || $home_field!=NULL)
          $mailer->addRecipie;
           $subject = "RED-NET - User activation";
           $mailer->setSubject($subject);
-          $body = "
-                  Hi $fname $lname,<br /><br />
+          $body = "          
+            Hi $fname $lname,<br /><br />
 
             Your account has been setup in RED-NET, a web portal of Firemen Movers.
             Please login with the provided temporary password, to setup your new
@@ -532,6 +538,7 @@ if($rslt!=NULL || $cell_field!=NULL || $home_field!=NULL)
                 $url = JRoute::_('index.php/component/rednet/workers?task=add_worker');
                 $this->setRedirect($url);
                 $this->redirect();
+                exit;
             } 
        }
                        

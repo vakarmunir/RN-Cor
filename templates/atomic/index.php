@@ -63,6 +63,7 @@ $app = JFactory::getApplication();
                    $user_group_obj = $db->loadObject();
                    $user_group_name = $user_group_obj->name; 
                    
+                   
                    if(isset($user_group_name))
                    {
                        $active_msg = '<p>User In-active.</p>';
@@ -73,8 +74,91 @@ $app = JFactory::getApplication();
                    if($user_group_name=="loader")
                    {                                                                  
                    }                                      
+                   
+                
+                
             }
 
+
+            
+        function getWorkersRoles($user_id)
+        {
+           
+                     
+        $db = JFactory::getDbo();
+        $query="SELECT * FROM #__worker_role_index WHERE user_id=$user_id";
+        $db->setQuery($query);
+        $db->query();
+        $role_indexes = $db->loadObjectList();
+                        
+        $role_string = '';
+        
+        $total = count($role_indexes);
+        $coma = ',';
+        $cntr=1;
+        $isPrint = false;
+        $html_all_loders = "";
+        $role_html = '';
+        $role_of_user = '';
+        
+        if(is_array($role_indexes))
+        {
+        
+            
+        foreach($role_indexes as $ri)
+        {
+            
+            if($cntr == $total)
+                $coma = '';
+                
+                $queryA="SELECT * FROM #__worker_role WHERE id=$ri->role_id";
+                $db->setQuery($queryA);
+                $db->query();
+                $role = $db->loadObject();                            
+                
+                
+                
+                        if($role->name == 'ldr-f' || $role->name == 'ldr-p')
+                        {
+                            
+                            $role_html = "Loader";
+                            $role_of_user = "loader";
+                        }                                                                                                
+                
+                
+                
+                        if($role->name == 'packer')
+                        {
+                            
+                            $role_html = "Packer";
+                            $role_of_user = "loader";
+                        }                                                                                                
+                
+                
+                
+                        if($role->name == 'drv-z' || $role->name == 'drv-g')
+                        {                                                   
+                            
+                            $role_html = "Driver";
+                            $role_of_user = "loader";
+                        }
+                
+                                
+                        if($role->name == 'cc' || $role->name == 'cct' || $role->name == 'acc' || $role->name == 'acc-g')
+                        {                                                    
+                            
+                            $role_html = "Crew Chief";
+                            $role_of_user = "crew";
+                        }
+                                                
+            $cntr++;
+        }
+        
+        }
+        
+            return $role_of_user;
+        }
+        
 ?>
 
 <?php echo '<?'; ?>xml version="1.0" encoding="<?php echo $this->_charset ?>"?>
@@ -129,10 +213,12 @@ $app = JFactory::getApplication();
 		<script type="text/javascript" src="<?php echo $this->baseurl ?>/templates/<?php echo $this->template ?>/js/jquery.easyui.min.js"></script>
 		<script type="text/javascript" src="<?php echo $this->baseurl ?>/templates/<?php echo $this->template ?>/js/date.js"></script>
 		<script type="text/javascript" src="<?php echo $this->baseurl ?>/templates/<?php echo $this->template ?>/js/jquery.qtip-1.0.0-rc3.min.js"></script>
+		<script type="text/javascript" src="<?php echo $this->baseurl ?>/templates/<?php echo $this->template ?>/js/moment.min.js"></script>
+		<script type="text/javascript" src="<?php echo $this->baseurl ?>/templates/<?php echo $this->template ?>/js/messi.js"></script>
 
                 
                 <script type="text/javascript" charset="utf-8">
-                    
+                    var gen_id_order_type = '';
                     var pr_role,sec_role,ad_role;
                     var role_error = false;
                     var type_order_error = false;
@@ -227,6 +313,10 @@ $app = JFactory::getApplication();
       $('.type_order').dropkick({
           change: function(value,label)
           {
+              gen_id_order_type = value;
+              
+              order_id_generation_code();
+              
               if(value == 'others')
               {
                   type_order_error = true;
@@ -306,12 +396,44 @@ $app = JFactory::getApplication();
       $('.pant_leg').dropkick();
       $('.waist').dropkick();
       
+      
     });
-    
+
+
+
+
   </script>
                 
 <script>
+    
+    function init_vehicles_link(obj)
+    {
+        $(obj).click(function(){
+                if($(obj).text() == 'Manage Vehicles')
+                {                                        
+                    var url = "<?php echo JUri::base()?>"+"index.php/component/rednet/fleet?task=manage_vehicles";                    
+                    window.location = url;
+                }
+                
+                
+                if($(obj).text() == 'Manage Vehicles')
+                {                                        
+                    var url = "<?php echo JUri::base()?>"+"index.php/component/rednet/fleet?task=manage_vehicles";                    
+                    window.location = url;
+                }
+                if($(obj).text() == 'Mmanage Ttrip Reports')
+                {                                        
+                    var url = "<?php echo JUri::base()?>"+"index.php/component/rednet/reportmaster";
+                    window.location = url;
+                }
+                                    
+                
+        });
+    }
+    
 		$(document).ready(function(){
+                    
+                    init_vehicles_link();
 			// binds form submission and fields to the validation engine
                         
                         $('p#type_other').hide()
@@ -355,6 +477,19 @@ $app = JFactory::getApplication();
                                 var date = $(this).val();
                                 var d_array =  date.split('/');                                
                                  dateValidate(d_array);                                 
+                        }});
+                    
+//			$(".time_field").mask("99:99 aa",{completed:function(){
+//                                var date = $(this).val();
+////                                var d_array =  date.split('/');                                
+////                                 dateValidate(d_array);
+//                            alert(date);
+//                        }});
+                    
+			$(".time_field_two").mask("99:99",{completed:function(){
+                               // var date = $(this).val();
+//                                var d_array =  date.split('/');                                
+//                                 dateValidate(d_array);                                 
                         }});                         
 		});
                 
@@ -441,18 +576,29 @@ $app = JFactory::getApplication();
 ddaccordion.init({
 	headerclass: "expandable", //Shared CSS class name of headers group that are expandable
 	contentclass: "categoryitems", //Shared CSS class name of contents group
-	revealtype: "click", //Reveal content when user clicks or onmouseover the header? Valid value: "click", "clickgo", or "mouseover"
+	revealtype: "", //Reveal content when user clicks or onmouseover the header? Valid value: "click", "clickgo", or "mouseover"
 	mouseoverdelay: 200, //if revealtype="mouseover", set delay in milliseconds before header expands onMouseover
-	collapseprev: true, //Collapse previous content (so only one open at any time)? true/false 
-	defaultexpanded: [], //index of content(s) open by default [index1, index2, etc]. [] denotes no content
+	collapseprev: false, //Collapse previous content (so only one open at any time)? true/false 
+	defaultexpanded: [w5], //index of content(s) open by default [index1, index2, etc]. [] denotes no content
 	onemustopen: true, //Specify whether at least one header should be open always (so never all headers closed)
 	animatedefault: false, //Should contents open by default be animated into view?
-	persiststate: true, //persist state of opened contents within browser session?
+	persiststate: false, //persist state of opened contents within browser session?
 	toggleclass: ["", "openheader"], //Two CSS classes to be applied to the header when it's collapsed and expanded, respectively ["class1", "class2"]
 	togglehtml: ["prefix", "", ""], //Additional HTML added to the header when it's collapsed and expanded, respectively  ["position", "html1", "html2"] (see docs)
 	animatespeed: "fast", //speed of animation: integer in milliseconds (ie: 200), or keywords "fast", "normal", or "slow"
 	oninit:function(headers, expandedindices){ //custom code to run when headers have initalized
 		//do nothing
+               //init_vehicles_link();
+               //alert(headers);
+               $(headers).each(function(i,obj){
+                   
+                       if($(obj).hasClass('openheader'))
+                       {
+                           //alert($(obj).text());
+                           init_vehicles_link(obj);
+                       }
+                   
+               });
 	},
 	onopenclose:function(header, index, state, isuseractivated){ //custom code to run whenever a header is opened or closed
 		//do nothing
@@ -478,6 +624,11 @@ ddaccordion.init({
                                     case "manage vehicles":                                        
                                         window.location = server+"index.php/component/rednet/fleet?task=manage_vehicles";
                                     break;                                    
+                                    
+                                    case "manage trip reports":                                        
+                                        window.location = server+"index.php/component/rednet/reportmaster";
+                                    break;                                    
+                                                                        
                                 }
                             }
                             if(state == "none")
@@ -549,15 +700,11 @@ function personal_info_varification()
                
 }
 function add_worker_varification()
-{
-   
-    
+{       
     if(validateField($('#first_name'),"First Name")==false)
         return false;
     if(validateField($('#last_name'),"Last Name")==false)
-        return false;
-    
-  
+        return false;      
     
     if(validateField($('#s_n2'),"S/N")==false)
         return false;
@@ -956,7 +1103,51 @@ background-color: #F3F3F3;
                                 
                                  if ($userId != 0 && $user_group_name != NULL)
                                  {
-                                       
+                                  
+                                     
+                                     if($user_group_name == 'admin')
+                                     {
+                                         
+                                         $worker = getWorkerById($userId);
+                                                if((isset($worker->verified_status) && $worker->verified_status == 1) && $worker->status == 1)
+                                                {
+                                                    echo  '<jdoc:include type="modules" name="admin-menu-position" style="none" />';                                          
+                                                }
+                                                if($worker->verified_status == NULL)
+                                                {
+                                                    echo  '<jdoc:include type="modules" name="admin-menu-position" style="none" />';                                          
+                                                }
+                                                if(isset($worker->status) && $worker->status == 0)
+                                                {
+                                                    echo  $active_msg;
+                                                }
+                                                
+                                     }  else {
+                                         $crnt_role =   getWorkersRoles($userId);
+                                         
+                                         
+                                         
+                                                $worker = getWorkerById($userId);
+                                                
+                                                if((isset($worker->verified_status) && $worker->verified_status == 1) && $worker->status == 1)
+                                                {
+                                                    if($crnt_role == 'crew')
+                                                    {
+                                                        echo  '<jdoc:include type="modules" name="crewoffice-menu-position" style="none" />';
+                                                    }
+                                                    if($crnt_role == 'loader')
+                                                    {
+                                                        echo  '<jdoc:include type="modules" name="loader-menu-position" style="none" />';
+                                                    }
+                                                }
+                                                
+                                                if(isset($worker->status) && $worker->status == 0)
+                                                {
+                                                    echo  $active_msg;
+                                                }
+                                     }
+                                     
+                                     /*
                                           switch ($user_group_name)
                                         {
                                             case 'admin':
@@ -981,7 +1172,8 @@ background-color: #F3F3F3;
                                                 echo  '<jdoc:include type="modules" name="crewoffice-menu-position" style="none" />';                                          
                                             break;
                                         
-                                            case 'loader':                                                
+                                            case 'loader':          
+                                                //echo "i m loader..";
                                                 $worker = getWorkerById($userId);
                                                 
                                                 if((isset($worker->verified_status) && $worker->verified_status == 1) && $worker->status == 1)
@@ -997,6 +1189,8 @@ background-color: #F3F3F3;
                                             break;
                                         }  
                                  
+                                      * 
+                                      */
                                 }               
                                 ?>
 

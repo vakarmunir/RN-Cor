@@ -28,15 +28,40 @@ class RednetControllerOrdersoncalendar extends RednetController
 	 */
 	protected $_viewname = 'ordersoncalendar'; 
 	protected $_user;
+	protected $_userId;
 	protected $_db;        
-        
+        protected $_session;
         public function __construct($config = array ()) 
 	{
                 $this->_user = JFactory::getUser();                
+                $this->_userId = $this->_user->id;
                 
 		parent :: __construct($config);
                 
 		JRequest :: setVar('view', $this->_viewname);                                
+                
+                
+                $worker_selected = JRequest::getVar('worker_id');
+                $session =& JFactory::getSession();
+                                                
+                if(isset($worker_selected) && $worker_selected != NULL)
+                {
+                    $session->set("non_admin_mode","true");
+                    $this->_userId = $worker_selected;
+                    $session->set("non_admin_id",$worker_selected);
+                }else{
+                    
+                    if($session->has("non_admin_mode"))
+                    {
+                        $session->clear("non_admin_mode");
+                        $session->clear("non_admin_id");
+                        $this->_userId = $this->_user->id;
+                    }
+                }
+                
+                $this->_session = $session;
+                
+                
                 
                 $data = array();                
                 $worker_model = $this->getModel('workers');                
@@ -44,21 +69,15 @@ class RednetControllerOrdersoncalendar extends RednetController
                 $workers = $worker_model->getAllActiveWorkers();                                                
                 
                 $worker_id_non_admin = NULL;
-                $authentication_group = $worker_model->getWorkerAuthenticationGroup($this->_user->id);
+                $authentication_group = $worker_model->getWorkerAuthenticationGroup($this->_userId);
                 if($authentication_group != 'admin')
                 {
-                    $worker_id_non_admin = $this->_user->id;
+                    $worker_id_non_admin = $this->_userId;
                 }                
                 $data['worker_id_non_admin'] = $worker_id_non_admin;                                                                                
                 
-                
-                
-                
                 $data['workers'] = $workers;                                                
-                JRequest::setVar('data',$data);                
-                
-                
-                
+                JRequest::setVar('data',$data);                                                
 	}
 	
         public function day_status()
@@ -197,7 +216,7 @@ class RednetControllerOrdersoncalendar extends RednetController
                 $worker_id = JRequest::getVar('worker_id');
                 
                 $worker_model = $this->getModel('workers');                
-                $authentication_group = $worker_model->getWorkerAuthenticationGroup($this->_user->id);
+                $authentication_group = $worker_model->getWorkerAuthenticationGroup($this->_userId);
                                 
                 
                 $all_orders = array();
@@ -221,18 +240,46 @@ class RednetControllerOrdersoncalendar extends RednetController
                 {
                    
                    $order_id = NULL; 
+                   $order_no_of_men = NULL; 
+                   $order_no_of_trucks = NULL; 
+                   
                    $resourcesmap_model = $this->getModel('resourcesmap');
                    
                  
                    if(isset($worker_id) && $worker_id!=NULL)
                    {
                        $order_id = $av->order_id;
+                       $order_no_of_men = $av->no_of_men;
+                       $order_no_of_trucks = $av->no_of_trucks;
                    }else{
                        $order_id = $av->id;
+                       $order_no_of_men = $av->no_of_men;
+                       $order_no_of_trucks = $av->no_of_trucks;
                    }
                    
-                   $order_in_resource_map = $resourcesmap_model->get_resourcesmap_by_order_id($order_id);
+                   $order_in_resource_map_all = $resourcesmap_model->get_resourcesmap_by_order_id($order_id);
+                   $order_in_resource_map_flt_array = array();                   
+                   $order_in_resource_map_trucks_array = array();                   
                    
+                   foreach ($order_in_resource_map_all as $rsm_flt)
+                   {
+                       if($rsm_flt->user_id > 0)
+                       {
+                           array_push($order_in_resource_map_flt_array, $rsm_flt);
+                       }
+                   }
+                   
+                   
+                   foreach ($order_in_resource_map_all as $rsm_flt)
+                   {
+                       if($rsm_flt->user_id == 0){
+                           array_push($order_in_resource_map_trucks_array, $rsm_flt);
+                       }
+                   }
+                   
+                   
+                   
+                   $order_in_resource_map = $order_in_resource_map_flt_array;
                    //if($order_id == 58)
                    //{
                    //var_dump($order_id);
@@ -277,33 +324,135 @@ class RednetControllerOrdersoncalendar extends RednetController
                    
                    foreach($order_in_resource_map as $rsm)
                    {
-                       if(($rsm->user_id != '0') && ( ( ($rsm->status != 'A') && ($rsm->status != 'D') ) &&  (($rsm->status == 'C') || ($rsm->status == 'CD'))  ))
+                       
+                       // logic to orange the partialy assinged resources.
+                       if( ($rsm->user_id != '0') )
                        {
-                            
                            if($authentication_group == 'admin')
                            {
-                               if(($rs_total > 0) && ($rs_counter_blk > 0) && ($rs_total==$rs_counter_blk))
+                               //logic for partial resources assignment
+                               if($rs_total < $order_no_of_men)
                                {
-                                   $color_class = 'black_class';                                   
-                               }                               
-                               $rs_counter_blk++;
-                               
+                                   $color_class = 'orange_class';
+                               }
                            }
-                           
-                           if($authentication_group == 'loader' || $authentication_group == 'crew_office')
+                       }
+                       
+                       if( ($rsm->user_id != '0')  &&  ( ($rsm->status != 'D') && ($rsm->status != 'C') && ($rsm->status != 'CD') && ($rsm->status != 'R') ) && ( $rsm->status == 'A' ) )
+                       {
+                           if( ($authentication_group == 'loader' || $authentication_group == 'crew_office') || ($this->_session->get('non_admin_mode')=='true') )
                            {
                                $model_resourcesmap = $this->getModel('resourcesmap');
-                               $rs_for_crnt_wrkr_of_crnt_ordr = $model_resourcesmap->get_resourcemap_by_UserId_and_OrderId($this->_user->id,$order_id);
+                               $rs_for_crnt_wrkr_of_crnt_ordr = $model_resourcesmap->get_resourcemap_by_UserId_and_OrderId($this->_userId,$order_id);
+                                   
+                               if($rs_for_crnt_wrkr_of_crnt_ordr->status == 'A')
+                               {                                                                                                      
+                                   $color_class = 'green_class';
+                               }                                    
+                           }
+                       }
+                       
+                       
+                       if( ($rsm->user_id != '0')  &&  ( ($rsm->status != 'D') && ($rsm->status != 'C') && ($rsm->status != 'CD') && ($rsm->status != 'A') ) && ( $rsm->status == 'R' ) )
+                       {
+                           if( ($authentication_group == 'loader' || $authentication_group == 'crew_office') || ($this->_session->get('non_admin_mode')=='true') )
+                           {
+                               $model_resourcesmap = $this->getModel('resourcesmap');
+                               $rs_for_crnt_wrkr_of_crnt_ordr = $model_resourcesmap->get_resourcemap_by_UserId_and_OrderId($this->_userId,$order_id);
+                                   
+                               if($rs_for_crnt_wrkr_of_crnt_ordr->status == 'R')
+                               {                                                                                                      
+                                   $color_class = 'orange_class';
+                               }                                    
+                           }
+                       }
+                       
+                       if( ($rsm->user_id != '0')  &&  ( ($rsm->status != 'R') && ($rsm->status != 'C') && ($rsm->status != 'CD') && ($rsm->status != 'A') ) && ( $rsm->status == 'D' ) )
+                       {
+                           if( ($authentication_group == 'loader' || $authentication_group == 'crew_office') || ($this->_session->get('non_admin_mode')=='true') )
+                           {
+                               $model_resourcesmap = $this->getModel('resourcesmap');
+                               $rs_for_crnt_wrkr_of_crnt_ordr = $model_resourcesmap->get_resourcemap_by_UserId_and_OrderId($this->_userId,$order_id);
+                                   
+                               if($rs_for_crnt_wrkr_of_crnt_ordr->status == 'D')
+                               {                                                                                                      
+                                   $color_class = 'red_class';
+                               }                                    
+                           }
+                       }
+                       
+                       
+                       // do with trucks
+                       
+                       if( ($rsm->user_id == '0') )
+                       {
+                           if($authentication_group == 'admin')
+                           {
+                               
+                           }
+                       }
+                       
+                       if(($rsm->user_id != '0') && ( ( ($rsm->status != 'A') && ($rsm->status != 'D') ) &&  (($rsm->status == 'C') || ($rsm->status == 'CD'))  ))
+                       {
+                           // logic to color black an order on admin user 
+                           if($authentication_group == 'admin')
+                           {
+                               //old logic do black if all assigned worker confirmed
+                               if(($rs_total > 0) && ($rs_counter_blk > 0) && ($rs_total==$rs_counter_blk))                               
+                               // new logic do black if any resource is confirmed
+                               //if(($rs_total > 0) && ($rs_counter_blk > 0))
+                               {
+                                   $color_class = 'black_class';                                   
+                               }
+                               
+                               //loginc for partial resources assignment
+                               if($rs_total < $order_no_of_men)
+                               {
+                                   $color_class = 'orange_class';
+                               }
+                               
+                               $rs_counter_blk++;                               
+                           }
+                           
+                           
+                           if( ($authentication_group == 'loader' || $authentication_group == 'crew_office') || ($this->_session->get('non_admin_mode')=='true') )
+                           {
+                               $model_resourcesmap = $this->getModel('resourcesmap');
+                               $rs_for_crnt_wrkr_of_crnt_ordr = $model_resourcesmap->get_resourcemap_by_UserId_and_OrderId($this->_userId,$order_id);
                                    
                                if($rs_for_crnt_wrkr_of_crnt_ordr->status == 'C' || $rs_for_crnt_wrkr_of_crnt_ordr->status == 'CD')
-                               {                                                                      
-                                
-                                   $color_class = 'green_class';
+                               {                                                                                                      
+                                   $color_class = 'black_class';
                                }
                                     
                            }                           
                        }
+                       
+                       
+                       
+                        // logic to color Yellow If found any rejected resouces                            						  
+                        if(($rsm->user_id != '0') && ( ( ($rsm->status != 'A') && ($rsm->status != 'D') ) &&  ($rsm->status == 'R')  ))
+                        {
+                             if($authentication_group == 'admin')
+                             {
+                                $color_class = 'yellow_class';                                                                  
+                             }
+                        }
                    }
+                   
+                   $rs_truck_counter = 0;
+                   $total_trucks = count($order_in_resource_map_trucks_array);
+                   //foreach ($order_in_resource_map_trucks_array as $rsm)
+                   //{
+                       if( ($authentication_group == 'admin') && ($this->_session->get('non_admin_mode')==NULL) )
+                       {
+                               if( ($total_trucks < $order_no_of_trucks) && $rs_total > 0 )
+                               {
+                                   $color_class = 'orange_class';
+                               }                                
+                               //$rs_truck_counter++;                                                                    
+                       }
+                   //}
                    
                    // ====== preparing add-on order of orignal order here ==============
                      $array_of_adons = array();
@@ -344,7 +493,7 @@ class RednetControllerOrdersoncalendar extends RednetController
                    {
                        $user_id_for_availability = $worker_id;
                    }else{
-                       $user_id_for_availability = $this->_user->id;
+                       $user_id_for_availability = $this->_userId;
                    }
                 
                    

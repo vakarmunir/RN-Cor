@@ -50,8 +50,8 @@ class RednetModelWorkerslist extends JModelList
 	
 		$catid = (int) $this->getState('authorlist.id', 1);		
 		$query->select('a.*');
-		$query->from('#__workers as a');
-					
+		$query->from('#__workers as a')->order("a.first_name ASC");
+		
 		return $query;
 	}	
 }

@@ -6,6 +6,10 @@
   padding: 0;
 }
 
+.shrink_div{
+    border: 0px solid red;
+    height: 1px;
+}
 .view_file_button{
                   border: 0px solid red;
                   height: 30px;
@@ -28,6 +32,22 @@
 .green_class
 {
     background-color: #292 !important;
+}
+.yellow_class
+{
+    background-color: #ffff33 !important;
+}
+.yellow_class p
+{
+    color: #000000 !important;
+}
+.orange_class
+{
+    background-color: #ff6600 !important;
+}
+.orange_class p
+{
+    color: #ffffff !important;
 }
 .green_class p
 {
@@ -90,13 +110,35 @@
 .worker_class{
     border: 1px solid red !important;
     width: 190px !important;
+/*    width: auto !important;*/
     margin-top: 5px !important;
     margin-bottom: 5px !important;
     height: 25px !important;
     text-align: center !important;
     vertical-align: middle !important;
+    cursor: pointer !important;
+}
+.workerclass{
+    border: 1px solid red !important;
+    width: 190px !important;
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
+    height: 25px !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    cursor: pointer !important;
 }
 .worker_class{
+    border: 1px solid red !important;
+    width: 125px !important;
+    margin-top: 2px !important;
+    margin-bottom: 2px !important;
+    height: 20px !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    font-size: 12px !important;
+}
+.workerclass{
     border: 1px solid red !important;
     width: 125px !important;
     margin-top: 2px !important;
@@ -120,13 +162,45 @@
 }
 .truck_class{
     border: 1px solid red !important;
-    width: 125px !important;
+/*    width: auto !important;*/
+    min-width:120px !important;
     margin-top: 2px !important;
     margin-bottom: 2px !important;
     height: 20px !important;
     text-align: center !important;
     vertical-align: middle !important;
     font-size: 12px !important;
+    
+}
+.row_holder{
+    border: 0px solid red !important;
+    width: 20px !important;
+    margin-top: 2px !important;
+    margin-bottom: 2px !important;
+    height: 20px !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    font-size: 12px !important;
+    float: left !important;
+    background-image: url("../images/holder.png");
+    
+}
+.row_droper{
+    border: 1px solid activeborder !important;
+    width: 20px !important;
+    margin-top: 2px !important;
+    margin-bottom: 2px !important;
+    height: 20px !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    font-size: 12px !important;
+    float: right !important;
+    background-color: whitesmoke;
+    
+}
+.dd_wraper{
+    width: 70px !important;    
+    border: 0px solid black !important;
 }
 
 span.drop_msg
@@ -194,6 +268,10 @@ span.drop_msg
     visibility: visible !important;
 }
 td[title="Edit"]
+{
+    cursor:pointer !important;
+}
+td[title="Trip Report"]
 {
     cursor:pointer !important;
 }
@@ -265,6 +343,23 @@ input[value="Log out"] , input[name="rental"] , input[name="fleet"],input[name="
     font-weight: bold;
     height: 39px;   
     width: 100px;
+    
+    cursor: pointer;
+}
+
+input.bigbutton
+{
+    
+    background-color:#FFF  !important;
+    background-image: url("../images/form_button_general_big_03.png");
+    
+    background-position: center top;
+    background-repeat: repeat-x;
+    border: medium none;
+    color: #FFFFFF;
+    font-weight: bold;
+    height: 39px;   
+    width: 170px;
     
     cursor: pointer;
 }

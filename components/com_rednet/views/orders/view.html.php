@@ -87,6 +87,12 @@ class RednetViewOrders  extends JView
                     $this->assignRef('workers_on_order_date', $workers_on_order_date);
                 }                               
                 
+                $workers_in_rs_on_order_date = JRequest::getVar('workers_in_rs_on_order_date');
+                if(isset($workers_in_rs_on_order_date))
+                {
+                    $this->assignRef('workers_in_rs_on_order_date', $workers_in_rs_on_order_date);
+                }                               
+                
                 $resources = JRequest::getVar('resources');
                 if(isset($resources))
                 {
@@ -129,10 +135,28 @@ class RednetViewOrders  extends JView
                     $this->assignRef('rentals_assigned', $rentals_assigned);
                 }
                 
+                $all_packers = JRequest::getVar('all_packers');
+                if(isset($all_packers))
+                {
+                    $this->assignRef('all_packers', $all_packers);
+                }                                                     
+                
                 $all_loaders = JRequest::getVar('all_loaders');
                 if(isset($all_loaders))
                 {
                     $this->assignRef('all_loaders', $all_loaders);
+                }                                                     
+                
+                $all_drivers = JRequest::getVar('all_drivers');
+                if(isset($all_drivers))
+                {
+                    $this->assignRef('all_drivers', $all_drivers);
+                }                                                     
+                
+                $all_crews = JRequest::getVar('all_crews');
+                if(isset($all_crews))
+                {
+                    $this->assignRef('all_crews', $all_crews);
                 }                                                     
                 
                 

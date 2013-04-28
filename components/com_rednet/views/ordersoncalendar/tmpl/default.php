@@ -6,8 +6,26 @@ $app = JFactory::getApplication();
 $data = $this->data;
 $workers = $data['workers'];
 $worker_id_non_admin = $data['worker_id_non_admin'];
+
+$session = JFactory::getSession();
+
+$non_admin_id = $session->get('non_admin_id');
+
+$switch_to_none_admin = false;
+
+
 $worker_id = JRequest::getVar('worker_id');
 
+if( isset($worker_id) && $worker_id_non_admin == NULL )
+{
+    $worker_id_non_admin = $worker_id;    
+    if($session->get('non_admin_mode') == 'true')
+    {
+        $switch_to_none_admin = true;
+    }else{
+        $switch_to_none_admin = false;
+    }    
+}
 
 $event_url = "";
 if(isset($worker_id) && $worker_id!=NULL)
@@ -30,7 +48,8 @@ if(isset($worker_id_non_admin) && $worker_id_non_admin!=NULL)
     
    function go_allocated_resource(id)
    {
-       var url = "<?php echo JURI::base(); ?>index.php/component/rednet/orders/?id="+id;
+        var non_admin_id = "<?php echo ( isset($non_admin_id)) ? ("&non_admin_id=".$non_admin_id) :('') ;?>";
+        var url = "<?php echo JURI::base(); ?>index.php/component/rednet/orders/?id="+id+non_admin_id;
        window.location = url;
    }
 
@@ -119,7 +138,14 @@ if(isset($worker_id_non_admin) && $worker_id_non_admin!=NULL)
                                 $(element).height(50);
                                 var the_html = $('span',element).html();
                                 the_html = "<br />"+the_html;
-                                $('span',element).html(the_html);                             
+                                $('span',element).html(the_html);
+                                
+                                    <?php
+                                    if(isset($worker_id_non_admin))
+                                    {
+                                    ?>
+                                    $('span',element).parent().attr('style','background-color:#CCFF66 !important;color:#005700 !important');                             
+                                <?php } ?>
                             }
                         },
                         eventClick: function( event, jsEvent, view ){
@@ -172,11 +198,19 @@ if(isset($worker_id_non_admin) && $worker_id_non_admin!=NULL)
 
 <script type="text/javascript">    
     $('ready').ready(function(){                
+        
         $('#order_button').click(function(){          
             var server = "<?php echo JURI::base(); ?>";            
             var path =server+"<?php echo "index.php/component/rednet/orders?task=order_form";?>";            
             window.location = path;
         });
+        
+        $('#daily_dispatch_button').click(function(){          
+            var server = "<?php echo JURI::base(); ?>";            
+            var path =server+"<?php echo "index.php/component/rednet/orderslist/?task=daily_dispatch";?>";            
+            window.location = path;
+        });
+        
     });
 </script>
 
@@ -286,7 +320,8 @@ if(isset($worker_id_non_admin) && $worker_id_non_admin!=NULL)
  </table>
 
 
-<?php if($worker_id_non_admin == NULL){ ?>
+
+<?php if($worker_id_non_admin == NULL || ($session->get('non_admin_mode') == 'true')){ ?>
 <table border="0" style="margin-left: 35px;" style="width: 100%">
   <tr>
             <td style="vertical-align: middle;padding-bottom: 18px" >&nbsp;Worker&nbsp; </td>
@@ -307,6 +342,7 @@ if(isset($worker_id_non_admin) && $worker_id_non_admin!=NULL)
             <td>
                 <div style="margin-left: 70px;">
                 <input class="button" type="submit" value="Create Order" name="order_button" id="order_button" />
+                <input class="bigbutton" type="submit" value="Daily Dispatch Screen" name="daily_dispatch_button" id="daily_dispatch_button" />
                 </div>
             </td>
   </tr>
